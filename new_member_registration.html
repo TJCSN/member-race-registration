@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>New Member Registration</title>
+
+  <style>
+
+    body {
+
+      font-family: Arial, sans-serif;
+
+      padding: 20px;
+
+      font-size: 18px;
+
+    }
+
+    h2 {
+
+      font-size: 22px;
+
+      color: maroon;
+
+    }
+
+    label {
+
+      display: block;
+
+      margin-top: 15px;
+
+    }
+
+    input, select, textarea {
+
+      width: 100%;
+
+      padding: 10px;
+
+      font-size: 18px;
+
+      margin-top: 5px;
+
+    }
+
+    .checkbox-group {
+
+      display: flex;
+
+      gap: 20px;
+
+      margin-top: 10px;
+
+    }
+
+    button {
+
+      margin-top: 20px;
+
+      padding: 15px;
+
+      font-size: 20px;
+
+      width: 100%;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <h2>New Member Registration</h2>
+
+  <form id="memberForm">
+
+    <label>Full Name (as per NRIC)<input name="fullName" required></label>
+
+    <label>Preferred Name<input name="preferredName" required></label>
+
+    <label>NRIC<input name="nric" required></label>
+
+    <label>Gender<input name="gender" required></label>
+
+    <label>Date of Birth<input type="date" name="dob" required></label>
+
+    <label>Jersey Size
+
+      <select name="jerseySize" required>
+
+        <option value="">Select</option>
+
+        <option>XS</option><option>S</option><option>M</option>
+
+        <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
+
+      </select>
+
+    </label>
+
+    <label>Weight<input name="weight" required></label>
+
+    <label>Postal Code<input name="postalCode" required></label>
+
+    <label>Nationality<input name="nationality" required></label>
+
+    <label>Ethnicity
+
+      <select name="ethnicity" required>
+
+        <option value="">Select</option>
+
+        <option>Chinese</option><option>Malay</option><option>Indian</option>
+
+        <option>Eurasian</option><option>Others</option>
+
+      </select>
+
+    </label>
+
+    <label>Contact Number<input name="contactNumber" required></label>
+
+    <label>Email Address<input type="email" name="email" required></label>
+
+    <label>Medical History<textarea name="medicalHistory"></textarea></label>
+
+    <h2>Emergency Contact</h2>
+
+    <label>Name of Emergency Contact<input name="emergencyName" required></label>
+
+    <label>Relationship<input name="relationship" required></label>
+
+    <label>Mobile Number<input name="emergencyMobile" required></label>
+
+    <h2>Experience / Certification</h2>
+
+    <label>Paddling Side</label>
+
+    <div class="checkbox-group">
+
+      <label><input type="checkbox" name="paddlingSide" value="LEFT"> LEFT</label>
+
+      <label><input type="checkbox" name="paddlingSide" value="RIGHT"> RIGHT</label>
+
+    </div>
+
+    <label>Certified Helmsman
+
+      <select name="helmsman" required>
+
+        <option value="">Select</option>
+
+        <option>Yes</option><option>No</option>
+
+      </select>
+
+    </label>
+
+    <label>Certified Coach
+
+      <select name="coach" required>
+
+        <option value="">Select</option>
+
+        <option>None</option><option>R1</option><option>L1</option>
+
+        <option>L2</option><option>L3</option>
+
+      </select>
+
+    </label>
+
+    <label>Can you swim? (with Personal Floatation Device)
+
+      <select name="swimAbility" required>
+
+        <option value="">Select</option>
+
+        <option>Yes</option><option>No</option><option>Can swim, cannot tread water</option>
+
+      </select>
+
+    </label>
+
+    <label>SDBA athlete card number<input name="sdbaCard" required></label>
+
+    <label><input type="checkbox" required> I have read and agree to the Terms and Conditions</label>
+
+    <button type="submit">Submit</button>
+
+  </form>
+
+</body>
+
+</html>
