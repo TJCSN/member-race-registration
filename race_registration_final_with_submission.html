@@ -160,13 +160,19 @@
 
   <div id="thankYou"></div>
 
+ 
+
+  
+
   <script>
 
-    const memberScriptURL = 'YOUR_MEMBER_NAMES_SCRIPT_URL';
+    const baseURL = 'https://script.google.com/macros/s/AKfycbx6sl52x9PpfLb3J-w4WPTbVvG7tIXYeV-3apy4s8F-aYu2KcatgEdepDyrl27-6jh22Q/exec';
 
-    const raceScriptURL = 'YOUR_RACE_NAMES_SCRIPT_URL';
+    const memberScriptURL = `${baseURL}?action=getMembers`;
 
-    const submissionScriptURL = 'YOUR_SUBMISSION_SCRIPT_URL';
+    const raceScriptURL = `${baseURL}?action=getRaces`;
+
+    const submissionScriptURL = baseURL;
 
  
 
@@ -224,13 +230,19 @@
 
       const formData = new FormData(this);
 
+ 
+
       const availability = Array.from(document.querySelectorAll('input[name="availability"]:checked')).map(cb => cb.value).join(', ');
 
       formData.set('availability', availability);
 
+ 
+
       const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSide"]:checked')).map(cb => cb.value).join(', ');
 
       formData.set('paddlingSide', paddlingSide);
+
+ 
 
       const name = formData.get('name');
 
