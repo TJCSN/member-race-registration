@@ -162,25 +162,13 @@
 
   <script>
 
-    //const memberScriptURL = 'YOUR_MEMBER_NAMES_SCRIPT_URL';
+    const memberScriptURL = 'YOUR_MEMBER_NAMES_SCRIPT_URL';
 
-    //const raceScriptURL = 'YOUR_RACE_NAMES_SCRIPT_URL';
+    const raceScriptURL = 'YOUR_RACE_NAMES_SCRIPT_URL';
 
-    //const submissionScriptURL = 'https://script.google.com/macros/s/AKfycbw7kJnwloeuMCDHQlfmaVxpbTyHE6s_JvV2yaBxOrV20Mtm7BQdJsGDw_IUhYPzE7c1Zw/exec';
+    const submissionScriptURL = 'YOUR_SUBMISSION_SCRIPT_URL';
 
-  
-  // ✅ Your deployed Web App URL
-    const baseScriptURL = 'https://script.google.com/macros/s/AKfycbw7kJnwloeuMCDHQlfmaVxpbTyHE6s_JvV2yaBxOrV20Mtm7BQdJsGDw_IUhYPzE7c1Zw/exec';
-
-  // 📥 Submit new member registration
-    const submissionScriptURL = baseScriptURL;
-
-  // 📤 Get member names
-    const memberScriptURL = `${baseScriptURL}?action=getMembers`;
-
-  // 🏁 Get race names
-    const raceScriptURL = `${baseScriptURL}?action=getRaces`;
-  <script>
+ 
 
     fetch(memberScriptURL)
 
