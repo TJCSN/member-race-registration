@@ -4,9 +4,9 @@
 
 <head>
 
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Race Registration</title>
 
@@ -18,15 +18,21 @@
 
       padding: 20px;
 
-      font-size: 18px;
+      font-size: 20px;
+
+      background-color: #fff8f5;
+
+      color: #4b1c1c;
 
     }
 
     h2 {
 
-      font-size: 22px;
+      font-size: 26px;
 
       color: maroon;
+
+      margin-top: 30px;
 
     }
 
@@ -36,6 +42,10 @@
 
       margin-top: 15px;
 
+      font-weight: bold;
+
+      color: #4b1c1c;
+
     }
 
     input, select {
@@ -44,9 +54,13 @@
 
       padding: 10px;
 
-      font-size: 18px;
+      font-size: 20px;
 
       margin-top: 5px;
+
+      border: 1px solid maroon;
+
+      border-radius: 5px;
 
     }
 
@@ -60,6 +74,8 @@
 
       margin-top: 10px;
 
+      font-size: 20px;
+
     }
 
     button {
@@ -68,9 +84,23 @@
 
       padding: 15px;
 
-      font-size: 20px;
+      font-size: 22px;
 
-      width: 100%;
+      background-color: maroon;
+
+      color: white;
+
+      border: none;
+
+      border-radius: 5px;
+
+      cursor: pointer;
+
+    }
+
+    button:hover {
+
+      background-color: #a52a2a;
 
     }
 
@@ -83,6 +113,32 @@
       color: green;
 
       display: none;
+
+    }
+
+    #summaryModal {
+
+      display: none;
+
+      position: fixed;
+
+      top: 5%;
+
+      left: 5%;
+
+      width: 90%;
+
+      background: white;
+
+      border: 3px solid maroon;
+
+      padding: 30px;
+
+      z-index: 1000;
+
+      font-size: 20px;
+
+      color: #4b1c1c;
 
     }
 
@@ -162,7 +218,31 @@
 
  
 
-  
+  <!-- Summary Modal -->
+
+  <div id="summaryModal">
+
+    <h2>Please Confirm Your Details</h2>
+
+    <div id="summaryContent" style="max-height:400px; overflow-y:auto; margin-bottom:20px;"></div>
+
+    <button id="confirmSubmit">Confirm & Submit</button>
+
+    <button onclick="document.getElementById('summaryModal').style.display='none'">Cancel</button>
+
+  </div>
+
+ 
+
+  <!-- Back to Home Button -->
+
+  <div style="text-align:center; margin-top:40px;">
+
+    <button onclick="location.href='welcome_page.html'" style="font-size:20px; padding:10px 20px; background-color:maroon; color:white; border:none; border-radius:5px;">Back to Home</button>
+
+  </div>
+
+ 
 
   <script>
 
@@ -172,7 +252,7 @@
 
     const raceScriptURL = `${baseURL}?action=getRaces`;
 
-    const submissionScriptURL = baseURL;
+    const raceRegistrationURL = `${baseURL}?action=registerRace`;
 
  
 
@@ -232,6 +312,12 @@
 
  
 
+      formData.set('fullName', formData.get('name'));
+
+      formData.delete('name');
+
+ 
+
       const availability = Array.from(document.querySelectorAll('input[name="availability"]:checked')).map(cb => cb.value).join(', ');
 
       formData.set('availability', availability);
@@ -244,27 +330,55 @@
 
  
 
-      const name = formData.get('name');
-
       const raceName = formData.get('raceName');
+
+      const fullName = formData.get('fullName');
 
  
 
-      fetch(submissionScriptURL, {
+      let summaryHTML = "<ul>";
 
-        method: 'POST',
+      for (let [key, value] of formData.entries()) {
 
-        body: formData
+        if (value.trim() !== "") {
 
-      }).then(() => {
+          summaryHTML += `<li><strong>${key}:</strong> ${value}</li>`;
 
-        document.getElementById('thankYou').textContent = `Thank you ${name}! You have registered for ${raceName}! Please screenshot this message for your record.`;
+        }
 
-        document.getElementById('thankYou').style.display = 'block';
+      }
 
-        document.getElementById('raceForm').reset();
+      summaryHTML += "</ul>";
 
-      });
+ 
+
+      document.getElementById("summaryContent").innerHTML = summaryHTML;
+
+      document.getElementById("summaryModal").style.display = "block";
+
+ 
+
+      document.getElementById("confirmSubmit").onclick = () => {
+
+        fetch(raceRegistrationURL, {
+
+          method: 'POST',
+
+          body: formData
+
+        }).then(() => {
+
+          document.getElementById('thankYou').textContent = `Thank you ${fullName}! You have registered for ${raceName}. Please screenshot this message for your record.`;
+
+          document.getElementById('thankYou').style.display = 'block';
+
+          document.getElementById('raceForm').reset();
+
+          document.getElementById("summaryModal").style.display = "none";
+
+        });
+
+      };
 
     });
 
