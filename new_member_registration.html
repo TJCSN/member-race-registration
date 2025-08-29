@@ -70,6 +70,7 @@
       z-index: 1000;
       font-size: 20px;
       color: #4b1c1c;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
   </style>
 </head>
@@ -157,7 +158,7 @@
       <p>By registering, you agree to abide by the club's safety rules, training commitments, and code of conduct. You also consent to the collection and use of your personal data for administrative and race-related purposes.</p>
       <p>You acknowledge that paddling is a physically demanding sport and agree to disclose any medical conditions that may affect your participation. You also agree to follow instructions from coaches and team leaders during training and races.</p>
     </div>
-    <label><input type="checkbox" id="agreeCheckbox" disabled required> I have read and agree to the Terms and Conditions</label>
+    <label><input type="checkbox" id="agreeCheckbox"> I have read and agree to the Terms and Conditions</label>
 
     <button type="submit">Submit</button>
   </form>
@@ -176,7 +177,7 @@
   </div>
 
   <script>
-    const submissionScriptURL = 'https://script.google.com/macros/s/AKfycbx6sl52x9PpfLb3J-w4WPTbVvG7tIXYeV-3apy4s8F-aYu2KcatgEdepDyrl27-6jh22Q/exec';
+    const submissionScriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
     const termsBox = document.getElementById('termsBox');
     const agreeCheckbox = document.getElementById('agreeCheckbox');
@@ -191,6 +192,11 @@
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+
+      if (!agreeCheckbox.checked) {
+        alert("Please agree to the Terms and Conditions before submitting.");
+        return;
+      }
 
       const formData = new FormData(form);
       const paddlingSides = [];
@@ -213,17 +219,18 @@
           method: "POST",
           body: formData,
         })
+        
         .then(response => response.text())
         .then(data => {
           alert(data === "Success" ? "Registration submitted successfully!" : data);
           form.reset();
-          document.getElementById
           document.getElementById("summaryModal").style.display = "none";
+          agreeCheckbox.checked = false;
           agreeCheckbox.disabled = true;
         })
         .catch(error => {
           alert("There was an error submitting the form.");
-          console.error(error);
+          console.error("Submission error:", error);
         });
       };
     });
