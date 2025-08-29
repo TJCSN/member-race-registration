@@ -1,445 +1,223 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <title>New Member Registration</title>
-
   <style>
-
     body {
-
       font-family: Arial, sans-serif;
-
       padding: 30px;
-
       font-size: 20px;
-
       background-color: #fff8f5;
-
       color: #4b1c1c;
-
     }
-
     h2 {
-
       font-size: 26px;
-
       color: maroon;
-
       margin-top: 30px;
-
     }
-
     label {
-
       display: block;
-
       margin-top: 15px;
-
       font-size: 20px;
-
     }
-
     input, select, textarea {
-
       width: 100%;
-
       padding: 10px;
-
       font-size: 20px;
-
       margin-top: 5px;
-
       border: 1px solid maroon;
-
       border-radius: 5px;
-
     }
-
     .checkbox-group {
-
       display: flex;
-
       gap: 30px;
-
       margin-top: 10px;
-
       font-size: 20px;
-
     }
-
     button {
-
       margin-top: 30px;
-
       padding: 15px;
-
       font-size: 22px;
-
       background-color: maroon;
-
       color: white;
-
       border: none;
-
       border-radius: 5px;
-
       cursor: pointer;
-
     }
-
     button:hover {
-
       background-color: #a52a2a;
-
     }
-
     #termsBox {
-
       height: 180px;
-
       overflow-y: scroll;
-
       border: 1px solid maroon;
-
       padding: 15px;
-
       background-color: #fff;
-
       margin-top: 10px;
-
       font-size: 18px;
-
     }
-
     #summaryModal {
-
       display: none;
-
       position: fixed;
-
       top: 5%;
-
       left: 5%;
-
       width: 90%;
-
       background: white;
-
       border: 3px solid maroon;
-
       padding: 30px;
-
       z-index: 1000;
-
       font-size: 20px;
-
       color: #4b1c1c;
-
     }
-
   </style>
-
 </head>
-
 <body>
-
   <h2>New Member Registration</h2>
-
   <form id="Members">
-
     <label>Full Name (as per NRIC)<input name="fullName" required></label>
-
     <label>Preferred Name<input name="preferredName" required></label>
-
-    <label>NRIC (Full)<input name="nric" required></label>
-
+    <label>Full NRIC<input name="nric" required></label>
     <label>Gender
-
       <select name="gender" required>
-
         <option value="">Select</option>
-
         <option value="female">Female</option>
-
         <option value="male">Male</option>
-
       </select>
-
     </label>
-
     <label>Date of Birth<input type="date" name="dob" required></label>
-
     <label>Jersey Size
-
       <select name="jerseySize" required>
-
         <option value="">Select</option>
-
         <option>XS</option><option>S</option><option>M</option>
-
         <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
-
       </select>
-
     </label>
-
     <label>Weight (kg)<input name="weight" required></label>
-
     <label>Postal Code<input name="postalCode" required></label>
-
     <label>Nationality<input name="nationality" required></label>
-
     <label>Ethnicity
-
       <select name="ethnicity" required>
-
         <option value="">Select</option>
-
         <option>Chinese</option><option>Malay</option><option>Indian</option>
-
         <option>Eurasian</option><option>Others</option>
-
       </select>
-
     </label>
-
     <label>Contact Number<input name="contactNumber" required></label>
-
     <label>Email Address<input type="email" name="email" required></label>
-
-    <label>Medical History (optional)<textarea name="medicalHistory"></textarea></label>
-
+    <label>Medical History (if any)<textarea name="medicalHistory"></textarea></label>
  
-
     <h2>Emergency Contact</h2>
-
     <label>Name of Emergency Contact<input name="emergencyName" required></label>
-
     <label>Relationship<input name="relationship" required></label>
-
     <label>Mobile Number<input name="emergencyMobile" required></label>
-
  
-
     <h2>Experience / Certification</h2>
-
     <label>Paddling Side</label>
-
     <div class="checkbox-group">
-
       <label><input type="checkbox" name="paddlingSide" value="LEFT"> LEFT</label>
-
       <label><input type="checkbox" name="paddlingSide" value="RIGHT"> RIGHT</label>
-
     </div>
-
     <label>Certified Helmsman
-
       <select name="helmsman" required>
-
         <option value="">Select</option>
-
         <option>Yes</option><option>No</option>
-
       </select>
-
     </label>
-
     <label>Certified Coach
-
       <select name="coach" required>
-
         <option value="">Select</option>
-
         <option>None</option><option>R1</option><option>L1</option>
-
         <option>L2</option><option>L3</option>
-
       </select>
-
     </label>
-
     <label>Can you swim? (with Personal Floatation Device)
-
       <select name="swimAbility" required>
-
         <option value="">Select</option>
-
         <option>Yes</option><option>No</option><option>Can swim, cannot tread water</option>
-
       </select>
-
     </label>
-
-    <label>SDBA athlete card number (optional)<input name="sdbaCard"></label>
-
+    <label>SDBA athlete card number (put 'Nil' if don't have one)<input name="sdbaCard"></label>
  
-
     <h2>Terms and Conditions</h2>
-
     <div id="termsBox">
-
       <p>By registering, you agree to abide by the club's safety rules, training commitments, and code of conduct. You also consent to the collection and use of your personal data for administrative and race-related purposes.</p>
-
       <p>You acknowledge that paddling is a physically demanding sport and agree to disclose any medical conditions that may affect your participation. You also agree to follow instructions from coaches and team leaders during training and races.</p>
-
     </div>
-
     <label><input type="checkbox" id="agreeCheckbox" disabled required> I have read and agree to the Terms and Conditions</label>
-
  
-
     <button type="submit">Submit</button>
-
   </form>
-
  
-
   <!-- Summary Modal -->
-
   <div id="summaryModal">
-
     <h2>Please Confirm Your Details</h2>
-
     <div id="summaryContent" style="max-height:400px; overflow-y:auto; margin-bottom:20px;"></div>
-
     <button id="confirmSubmit">Confirm & Submit</button>
-
     <button onclick="document.getElementById('summaryModal').style.display='none'">Cancel</button>
-
   </div>
-
  
-
   <!-- Back to Home Button -->
-
   <div style="text-align: center; margin-top: 40px;">
-
     <button onclick="location.href='welcome_page.html'" style="font-size: 20px; padding: 15px 30px; background-color: maroon; color: white; border: none; border-radius: 5px; cursor: pointer;">
-
       Back to Home
-
     </button>
-
   </div>
-
  
-
   <script>
-
     const submissionScriptURL = 'https://script.google.com/macros/s/AKfycbx6sl52x9PpfLb3J-w4WPTbVvG7tIXYeV-3apy4s8F-aYu2KcatgEdepDyrl27-6jh22Q/exec';
-
  
-
     const termsBox = document.getElementById('termsBox');
-
     const agreeCheckbox = document.getElementById('agreeCheckbox');
-
  
-
     termsBox.addEventListener('scroll', () => {
-
       if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight) {
-
         agreeCheckbox.disabled = false;
-
       }
-
     });
-
  
-
     const form = document.getElementById("Members");
-
  
-
     form.addEventListener("submit", function (e) {
-
       e.preventDefault();
-
  
-
       const formData = new FormData(form);
-
       const paddlingSides = [];
-
       form.querySelectorAll('input[name="paddlingSide"]:checked').forEach(cb => paddlingSides.push(cb.value));
-
       formData.set("paddlingSide", paddlingSides.join(", "));
-
  
-
       // Build summary
-
       let summaryHTML = "<ul>";
-
       for (let [key, value] of formData.entries()) {
-
         if (value.trim() !== "") {
-
           summaryHTML += `<li><strong>${key}:</strong> ${value}</li>`;
-
         }
-
       }
-
       summaryHTML += "</ul>";
-
  
-
       document.getElementById("summaryContent").innerHTML = summaryHTML;
-
       document.getElementById("summaryModal").style.display = "block";
-
  
-
       // Confirm and submit
-
       document.getElementById("confirmSubmit").onclick = () => {
-
         fetch(submissionScriptURL, {
-
           method: "POST",
-
           body: formData,
-
         })
-
         .then(response => response.text())
-
         .then(data => {
-
           alert(data === "Success" ? "Registration submitted successfully!" : data);
-
           form.reset();
-
           document.getElementById("summaryModal").style.display = "none";
-
           agreeCheckbox.disabled = true;
-
         })
-
         .catch(error => {
-
           alert("There was an error submitting the form.");
-
           console.error(error);
-
         });
-
       };
-
     });
-
   </script>
-
 </body>
-
 </html>
