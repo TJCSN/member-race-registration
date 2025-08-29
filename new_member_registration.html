@@ -218,3 +218,15 @@
           alert(data === "Success" ? "Registration submitted successfully!" : data);
           form.reset();
           document.getElementById
+          document.getElementById("summaryModal").style.display = "none";
+          agreeCheckbox.disabled = true;
+        })
+        .catch(error => {
+          alert("There was an error submitting the form.");
+          console.error(error);
+        });
+      };
+    });
+  </script>
+</body>
+</html>
