@@ -60,13 +60,13 @@
 
     <label>Name
       <select id="memberDropdown" name="name" required>
-        <option value="">-- Select Name --</option>
+        <option value="">Loading names...</option>
       </select>
     </label>
 
     <label>Race Name
       <select id="raceName" name="raceName" required>
-        <option value="">-- Select Race --</option>
+        <option value="">Loading races...</option>
       </select>
     </label>
 
@@ -105,33 +105,46 @@
 
   <script>
     const baseURL = 'https://script.google.com/macros/s/AKfycbx6sl52x9PpfLb3J-w4WPTbVvG7tIXYeV-3apy4s8F-aYu2KcatgEdepDyrl27-6jh22Q/exec';
-    const memberScriptURL = `${baseURL}?action=getMemberNames`;
-    const raceScriptURL = `${baseURL}?action=getRaceNames`;
 
-    fetch(memberScriptURL)
+    // Load member names
+    fetch(`${baseURL}?action=getMemberNames`)
       .then(res => res.json())
       .then(names => {
         const dropdown = document.getElementById('memberDropdown');
+        dropdown.innerHTML = '<option value="">-- Select Name --</option>';
         names.forEach(name => {
           const option = document.createElement('option');
           option.value = name;
           option.textContent = name;
           dropdown.appendChild(option);
         });
+      })
+      .catch(error => {
+        console.error('Error loading member names:', error);
+        const dropdown = document.getElementById('memberDropdown');
+        dropdown.innerHTML = '<option value="">Unable to load names</option>';
       });
 
-    fetch(raceScriptURL)
+    // Load race names
+    fetch(`${baseURL}?action=getRaceNames`)
       .then(res => res.json())
       .then(races => {
         const dropdown = document.getElementById('raceName');
+        dropdown.innerHTML = '<option value="">-- Select Race --</option>';
         races.forEach(race => {
           const option = document.createElement('option');
           option.value = race;
           option.textContent = race;
           dropdown.appendChild(option);
         });
+      })
+      .catch(error => {
+        console.error('Error loading race names:', error);
+        const dropdown = document.getElementById('raceName');
+        dropdown.innerHTML = '<option value="">Unable to load races</option>';
       });
 
+    // Handle form submission
     document.getElementById('raceForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const formData = new FormData(this);
@@ -139,10 +152,14 @@
       formData.set('fullName', formData.get('name'));
       formData.delete('name');
 
-      const availability = Array.from(document.querySelectorAll('input[name="availability"]:checked')).map(cb => cb.value).join(', ');
+      const availability = Array.from(document.querySelectorAll('input[name="availability"]:checked'))
+        .map(cb => cb.value)
+        .join(', ');
       formData.set('availability', availability);
 
-      const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSide"]:checked')).map(cb => cb.value).join(', ');
+      const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSide"]:checked'))
+        .map(cb => cb.value)
+        .join(', ');
       formData.set('paddlingSide', paddlingSide);
 
       const raceName = formData.get('raceName');
@@ -151,9 +168,14 @@
       fetch(baseURL, {
         method: 'POST',
         body: formData
-      }).then(() => {
+      })
+      .then(() => {
         window.alert(`Thank you ${fullName}! You have registered for ${raceName}, please screenshot the page for future reference.`);
         document.getElementById('raceForm').reset();
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        window.alert('Submission failed. Please try again later.');
       });
     });
   </script>
