@@ -1,61 +1,124 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Welcome to Our Family</title>
-
   <style>
-
     body {
-
       font-family: Arial, sans-serif;
-
       text-align: center;
-
-      padding: 20px;
-
-      font-size: 18px;
-
+      padding: 40px;
+      font-size: 22px;
+      background-color: #fff8f5;
+      color: #4b1c1c;
     }
-
     h1 {
-
-      font-size: 24px;
-
+      font-size: 32px;
+      color: maroon;
+      margin-bottom: 40px;
     }
-
     button {
-
-      font-size: 20px;
-
-      padding: 15px 30px;
-
+      font-size: 24px;
+      padding: 20px 40px;
       margin: 20px;
-
       width: 90%;
-
-      max-width: 300px;
-
+      max-width: 400px;
+      background-color: maroon;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-
+    button:hover {
+      background-color: #a52a2a;
+    }
+ 
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+ 
+    .modal-content {
+      background-color: #fff8f5;
+      margin: 10% auto;
+      padding: 30px;
+      border: 1px solid maroon;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+      text-align: left;
+    }
+ 
+    .close {
+      color: maroon;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+ 
+    .close:hover {
+      color: #a52a2a;
+    }
   </style>
-
 </head>
-
 <body>
-
   <h1>Welcome to Seahawk Sports Club</h1>
-
-  <button onclick="location.href='new_member_registration.html'">New Member Registration</button>
-
-  <button onclick="location.href='race_registration_final_with_submission.html'">Race Registration (For existing member only)</button>
-
+  <button onclick="openModal()">New Member Registration</button>
+  <button onclick="location.href='race_registration_final_with_submission.html'">
+    Race Registration<br>
+    <span class="small-note">(For existing member only)</span>
+  </button>
+  <div id="memberModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>New Member Registration</h2>
+      <p>Welcome to Seahawk! We’re excited to have you onboard. Before joining us, please take a moment to read through the following:</p>
+                  <p>1. Team Philosophy<p>
+                                <p>
+We welcome paddlers of all levels who are passionate about the sport and eager to grow. Seahawk is a competitive team, and while we support everyone’s development, selection for race crews is based on training attendance, consistent effort, and performance. Being part of the race crew is not guaranteed, but we believe in supporting each other to improve and succeed together.<p>
+                  <p>2. Training Commitment<p>
+                                <p>
+Members are encouraged to attend training regularly, as it plays an important role in building team synergy and personal progress. Participation and consistency will be considered as part of the crew selection process.</p>
+                  <p>3. Code of Conduct<p>
+                                <p>
+All members are expected to treat one another with respect, foster a positive and encouraging environment, and contribute to the team both in and out of training. Seahawk values teamwork, discipline, and mutual support.</p>
+                  <p>4. Health & Safety<p>
+                                <p>
+Please ensure that you are physically fit and medically cleared to participate in training and races. Inform the team if you have any injuries or medical conditions that could affect your participation.</p>
+      <h3>Once you close this window, you'll be redirected to the New Member Registration Form.</h3>
+    </div>
+  </div>
+ 
+  <script>
+    function openModal() {
+      document.getElementById("memberModal").style.display = "block";
+    }
+ 
+    function closeModal() {
+      document.getElementById("memberModal").style.display = "none";
+      setTimeout(function() {
+        window.location.href = "new_member_registration.html";
+      }, 2);
+    }
+ 
+    window.onclick = function(event) {
+      const modal = document.getElementById("memberModal");
+      if (event.target === modal) {
+        modal.style.display = "none";
+        setTimeout(function() {
+          window.location.href = "new_member_registration.html";
+        }, 2);
+      }
+    }
+  </script>
 </body>
-
 </html>
