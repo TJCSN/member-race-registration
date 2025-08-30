@@ -122,7 +122,8 @@
       .catch(error => {
         console.error('Error loading member names:', error);
         const dropdown = document.getElementById('memberDropdown');
-        dropdown.innerHTML = '<option value="">Unable to load names</option>';
+        dropdown.innerHTML = '<option value="">Unable to load names, please try again later.</option>';
+        alert('Error loading member names. Please try again later.');
       });
 
     // Load race names
@@ -141,7 +142,8 @@
       .catch(error => {
         console.error('Error loading race names:', error);
         const dropdown = document.getElementById('raceName');
-        dropdown.innerHTML = '<option value="">Unable to load races</option>';
+        dropdown.innerHTML = '<option value="">Unable to load races, please try again later.</option>';
+        alert('Error loading race names. Please try again later.');
       });
 
     // Handle form submission
@@ -170,12 +172,13 @@
         body: formData
       })
       .then(() => {
-        window.alert(`Thank you ${fullName}! You have registered for ${raceName}, please screenshot the page for future reference.`);
+        alert(`Thank you ${fullName}! You have registered for ${raceName}. Please screenshot the page for future reference.`);
         document.getElementById('raceForm').reset();
+        window.location.href = 'index.html'; // Redirect to home page after registration
       })
       .catch(error => {
         console.error('Error submitting form:', error);
-        window.alert('Submission failed. Please try again later.');
+        alert('Submission failed. Please try again later.');
       });
     });
   </script>
