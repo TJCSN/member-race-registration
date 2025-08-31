@@ -104,7 +104,7 @@
   </div>
 
   <script>
-    const baseURL = 'https://script.google.com/macros/s/AKfycbzVp7PHMhVqMwTh12Xz7HvoQp0ftekL0M0he8EiNfLvi_Q-cLYMz_3Pr8Wm9mbzhDVOnA/exec';
+    const baseURL = 'https://script.google.com/macros/s/AKfycbwuzdsH2c12wFimpb_QvcC6rFwJ18vrkyrx8GNX6njnulIzkw_gOlsnIEyF8t22EhG0tA/exec';
 
     // Load member names
     fetch(`${baseURL}?action=getMemberNames`)
@@ -172,7 +172,7 @@
         body: formData
       })
       .then(() => {
-        alert(`Thank you ${fullName}! You have registered for ${raceName}. Please screenshot the page for future reference.`);
+        alert(`Thank you ${fullName}! You have registered for ${raceName}, and this is your ${availability}. Please screenshot this page for future reference.`);
         document.getElementById('raceForm').reset();
         window.location.href = 'index.html'; // Redirect to home page after registration
       })
