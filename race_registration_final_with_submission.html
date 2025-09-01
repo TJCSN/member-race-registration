@@ -62,23 +62,20 @@
   <form id="raceForm">
     <input type="hidden" name="action" value="registerRace">
 
-    <label>Name
-      <select id="memberDropdown" name="name" class="searchable" required>
+    <label for="memberDropdown">Name</label>
+    <select id="memberDropdown" name="name" required>
+      <option value="">Loading names...</option>
+    </select>
 
-      </select>
-    </label>
+    <label for="raceName">Race Name</label>
+    <select id="raceName" name="raceName" required>
+      <option value="">Loading races...</option>
+    </select>
 
-    <label>Race Name
-      <select id="raceName" name="raceName" class="searchable" required>
-        <option value="">Loading races...</option>
-      </select>
-    </label>
     <label>Postal Code<input type="number" name="postalCode" required></label>
-    <label>⚖️ Weight (kg)
-      <input type="number" name="weight" min="30" max="150" required>
-    </label>
+    <label>Weight (kg)<input type="number" name="weight" min="30" max="150" required></label>
 
-    <label>🧭 Certified Helmsman
+    <label>Certified Helmsman
       <select name="helm" required>
         <option value="">-- Select --</option>
         <option value="Yes">Yes</option>
@@ -87,7 +84,7 @@
     </label>
 
     <label>Certified Coach
-      <select name="coach" required>
+      <select name="Certified Coach" required>
         <option value="">Select</option>
         <option>None</option><option>R1</option><option>L1</option>
         <option>L2</option><option>L3</option>
