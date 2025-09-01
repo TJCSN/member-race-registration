@@ -64,7 +64,7 @@
 
     <label>Name
       <select id="memberDropdown" name="name" class="searchable" required>
-        <option value="">Loading names...</option>
+
       </select>
     </label>
 
@@ -73,7 +73,7 @@
         <option value="">Loading races...</option>
       </select>
     </label>
-
+    <label>Postal Code<input type="number" name="postalCode" required></label>
     <label>⚖️ Weight (kg)
       <input type="number" name="weight" min="30" max="150" required>
     </label>
@@ -83,6 +83,14 @@
         <option value="">-- Select --</option>
         <option value="Yes">Yes</option>
         <option value="No">No</option>
+      </select>
+    </label>
+
+    <label>Certified Coach
+      <select name="coach" required>
+        <option value="">Select</option>
+        <option>None</option><option>R1</option><option>L1</option>
+        <option>L2</option><option>L3</option>
       </select>
     </label>
 
