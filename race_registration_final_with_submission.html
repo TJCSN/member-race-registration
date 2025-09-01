@@ -193,7 +193,7 @@
         body: formData
       })
       .then(() => {
-        alert(`Thank you ${fullName}! You have registered for ${raceName}, and this is your ${availability}. Please screenshot this page for future reference.`);
+        alert(`Thank you ${fullName}! You have registered for ${raceName}, and you are available on${availability}. Please screenshot this page for future reference.`);
         document.getElementById('raceForm').reset();
         window.location.href = 'index.html';
       })
