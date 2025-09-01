@@ -192,7 +192,7 @@
       .then(response => response.text())
       .then(data => {
         if (data === "Success") {
-          alert(`Thank you ${fullName}, Your submission has been successed!`);
+          alert(`Thank you ${fullName}! Your submission has been successful!`);
           form.reset();
           agreeCheckbox.checked = false;
           agreeCheckbox.disabled = true;
