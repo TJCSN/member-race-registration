@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,11 +73,16 @@
       <option value="">Loading races...</option>
     </select>
 
-    <label>Postal Code<input type="number" name="postalCode" required></label>
-    <label>Weight (kg)<input type="number" name="weight" min="30" max="150" required></label>
+    <label>Postal Code (For Race)
+      <input type="number" name="racePostalCode" required>
+    </label>
+
+    <label>Weight (kg)
+      <input type="number" name="raceWeight" min="30" max="150" required>
+    </label>
 
     <label>Certified Helmsman
-      <select name="helm" required>
+      <select name="certifiedHelm" required>
         <option value="">-- Select --</option>
         <option value="Yes">Yes</option>
         <option value="No">No</option>
@@ -84,7 +90,7 @@
     </label>
 
     <label>Certified Coach
-      <select name="Certified Coach" required>
+      <select name="certifiedCoach" required>
         <option value="">Select</option>
         <option>None</option><option>R1</option><option>L1</option>
         <option>L2</option><option>L3</option>
@@ -99,10 +105,10 @@
       <label><input type="checkbox" name="availability" value="Day 2 PM"> Day 2 PM</label>
     </div>
 
-    <label>🛶 Paddling Side</label>
+    <label>🛶 Paddling Side (Race)</label>
     <div class="checkbox-group">
-      <label><input type="checkbox" name="paddlingSide" value="LEFT"> LEFT</label>
-      <label><input type="checkbox" name="paddlingSide" value="RIGHT"> RIGHT</label>
+      <label><input type="checkbox" name="paddlingSideRace" value="LEFT"> LEFT</label>
+      <label><input type="checkbox" name="paddlingSideRace" value="RIGHT"> RIGHT</label>
     </div>
 
     <button type="submit">Submit</button>
@@ -174,10 +180,10 @@
         .join(', ');
       formData.set('availability', availability);
 
-      const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSide"]:checked'))
+      const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSideRace"]:checked'))
         .map(cb => cb.value)
         .join(', ');
-      formData.set('paddlingSide', paddlingSide);
+      formData.set('paddlingSideRace', paddlingSide);
 
       const raceName = formData.get('raceName');
       const fullName = formData.get('fullName');
