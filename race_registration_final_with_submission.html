@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Race Registration</title>
+
+  <!-- Select2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -59,13 +63,13 @@
     <input type="hidden" name="action" value="registerRace">
 
     <label>Name
-      <select id="memberDropdown" name="name" required>
+      <select id="memberDropdown" name="name" class="searchable" required>
         <option value="">Loading names...</option>
       </select>
     </label>
 
     <label>Race Name
-      <select id="raceName" name="raceName" required>
+      <select id="raceName" name="raceName" class="searchable" required>
         <option value="">Loading races...</option>
       </select>
     </label>
@@ -103,6 +107,10 @@
     <button onclick="location.href='welcome_page.html'" style="font-size:20px; padding:10px 20px; background-color:maroon; color:white; border:none; border-radius:5px;">Back to Home</button>
   </div>
 
+  <!-- jQuery & Select2 JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
   <script>
     const baseURL = 'https://script.google.com/macros/s/AKfycbwuzdsH2c12wFimpb_QvcC6rFwJ18vrkyrx8GNX6njnulIzkw_gOlsnIEyF8t22EhG0tA/exec';
 
@@ -118,6 +126,7 @@
           option.textContent = name;
           dropdown.appendChild(option);
         });
+        $('#memberDropdown').select2({ placeholder: "-- Select Name --", allowClear: true, width: '100%' });
       })
       .catch(error => {
         console.error('Error loading member names:', error);
@@ -138,6 +147,7 @@
           option.textContent = race;
           dropdown.appendChild(option);
         });
+        $('#raceName').select2({ placeholder: "-- Select Race --", allowClear: true, width: '100%' });
       })
       .catch(error => {
         console.error('Error loading race names:', error);
@@ -174,7 +184,7 @@
       .then(() => {
         alert(`Thank you ${fullName}! You have registered for ${raceName}, and this is your ${availability}. Please screenshot this page for future reference.`);
         document.getElementById('raceForm').reset();
-        window.location.href = 'index.html'; // Redirect to home page after registration
+        window.location.href = 'index.html';
       })
       .catch(error => {
         console.error('Error submitting form:', error);
