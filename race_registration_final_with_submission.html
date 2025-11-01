@@ -27,7 +27,7 @@
       font-weight: bold;
       color: #4b1c1c;
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 10px;
       font-size: 20px;
@@ -89,6 +89,9 @@
       <label><input type="checkbox" name="paddlingSideRace" value="LEFT"> LEFT</label>
       <label><input type="checkbox" name="paddlingSideRace" value="RIGHT"> RIGHT</label>
     </div>
+
+    <label for="remarks">Remarks</label>
+    <textarea id="remarks" name="remarks" rows="4" placeholder="Enter any comments or notes here..."></textarea>
 
     <button type="submit">Submit</button>
   </form>
@@ -166,13 +169,14 @@
 
       const raceName = formData.get('raceName');
       const fullName = formData.get('fullName');
+      const remarks = formData.get('remarks') || 'None';
 
       fetch(baseURL, {
         method: 'POST',
         body: formData
       })
       .then(() => {
-        alert(`Thank you ${fullName}! You have registered for ${raceName}, and you are available on: ${availability}. Please screenshot this page for future reference.`);
+        alert(`Thank you ${fullName}! You have registered for ${raceName}, and you are available on: ${availability}. Remarks: ${remarks}. Please screenshot this page for future reference.`);
         document.getElementById('raceForm').reset();
         $('#memberDropdown').val(null).trigger('change');
         $('#raceName').val(null).trigger('change');
