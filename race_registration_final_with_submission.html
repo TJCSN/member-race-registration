@@ -105,7 +105,7 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <script>
-    const baseURL = 'https://script.google.com/macros/s/AKfycbzAVxScmfvAjNdYcgXRRF0OtJ4Plx1GBHEcUhJvWbdX82HFSscTZ2t-ngqIIaQSYNSL6g/exec';
+    const baseURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // Replace with your actual script URL
 
     // Load member names
     fetch(`${baseURL}?action=getMemberNames`)
@@ -120,12 +120,6 @@
           dropdown.appendChild(option);
         });
         $('#memberDropdown').select2({ placeholder: "-- Select Name --", allowClear: true, width: '100%' });
-      })
-      .catch(error => {
-        console.error('Error loading member names:', error);
-        const dropdown = document.getElementById('memberDropdown');
-        dropdown.innerHTML = '<option value="">Unable to load names, please try again later.</option>';
-        alert('Error loading member names. Please try again later.');
       });
 
     // Load race names
@@ -141,12 +135,6 @@
           dropdown.appendChild(option);
         });
         $('#raceName').select2({ placeholder: "-- Select Race --", allowClear: true, width: '100%' });
-      })
-      .catch(error => {
-        console.error('Error loading race names:', error);
-        const dropdown = document.getElementById('raceName');
-        dropdown.innerHTML = '<option value="">Unable to load races, please try again later.</option>';
-        alert('Error loading race names. Please try again later.');
       });
 
     // Handle form submission
@@ -167,16 +155,15 @@
         .join(', ');
       formData.set('paddlingSideRace', paddlingSide);
 
-      const raceName = formData.get('raceName');
-      const fullName = formData.get('fullName');
       const remarks = formData.get('remarks') || 'None';
+      formData.set('remarks', remarks);
 
       fetch(baseURL, {
         method: 'POST',
         body: formData
       })
       .then(() => {
-        alert(`Thank you ${fullName}! You have registered for ${raceName}, and you are available on: ${availability}. Remarks: ${remarks}. Please screenshot this page for future reference.`);
+        alert(`Thank you ${formData.get('fullName')}! You have registered for ${formData.get('raceName')}. Remarks: ${remarks}`);
         document.getElementById('raceForm').reset();
         $('#memberDropdown').val(null).trigger('change');
         $('#raceName').val(null).trigger('change');
