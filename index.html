@@ -13,11 +13,13 @@
       background-color: #fff8f5;
       color: #4b1c1c;
     }
+ 
     h1 {
       font-size: 32px;
       color: maroon;
       margin-bottom: 30px;
     }
+ 
     button {
       font-size: 22px;
       padding: 16px 24px;
@@ -31,15 +33,17 @@
       cursor: pointer;
       display: block;
     }
+ 
     button:hover {
       background-color: #a52a2a;
     }
+ 
     .small-note {
       font-size: 16px;
       display: block;
       margin-top: 5px;
     }
-
+ 
     .modal {
       display: none;
       position: fixed;
@@ -52,7 +56,7 @@
       background-color: rgba(0,0,0,0.5);
       transition: opacity 0.3s ease;
     }
-
+ 
     .modal-content {
       background-color: #fff8f5;
       margin: 10% auto;
@@ -64,7 +68,7 @@
       text-align: left;
       font-size: 18px;
     }
-
+ 
     .close {
       color: maroon;
       float: right;
@@ -72,11 +76,11 @@
       font-weight: bold;
       cursor: pointer;
     }
-
+ 
     .close:hover {
       color: #a52a2a;
     }
-
+ 
     @media (max-width: 480px) {
       body {
         font-size: 18px;
@@ -98,46 +102,136 @@
 </head>
 <body>
   <h1>Welcome to Seahawk Sports Club</h1>
-
+ 
   <button onclick="openModal()">New Member Registration</button>
   <button onclick="location.href='race_registration_final_with_submission.html'">
     Race Registration<br>
     <span class="small-note">(For existing member only)</span>
   </button>
-
+ 
   <div id="memberModal" class="modal" role="dialog" aria-modal="true">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <h2>New Member Registration</h2>
-      <p>Welcome to Seahawk! We’re excited to have you onboard. Before joining us, please take a moment to read through the following:</p>
+      <p>Welcome to Seahawk! We're excited to have you onboard. Before joining us, please take a moment to read through the following:</p>
+ 
       <p><strong>1. Team Philosophy</strong><br>
-        We welcome paddlers of all levels who are passionate about the sport and eager to grow. Seahawk is a competitive team, and while we support everyone’s development, selection for race crews is based on training attendance, consistent effort, and performance.
+      We welcome paddlers of all levels who are passionate about the sport and eager to grow. Seahawk is a competitive team, and while we support everyone's development, selection for race crews is based on training attendance, consistent effort, and performance.
       </p>
+ 
       <p><strong>2. Training Commitment</strong><br>
-        Members are encouraged to attend training regularly to build team synergy and personal progress.
+      Members are encouraged to attend training regularly to build team synergy and personal progress.
       </p>
+ 
       <p><strong>3. Code of Conduct</strong><br>
-        Treat one another with respect, foster positivity, and contribute to the team both in and out of training.
+      Treat one another with respect, foster positivity, and contribute to the team both in and out of training.
       </p>
+ 
       <p><strong>4. Health & Safety</strong><br>
-        Ensure you’re medically fit to participate. Inform the team of any conditions that may affect your involvement.
+      Ensure you're medically fit to participate. Inform the team of any conditions that may affect your involvement.
       </p>
-      <p><strong>Once you close this window, you'll be redirected to the New Member Registration Form.<strong></strong></p>
+ 
+      <p><strong>Once you close this window, you'll be redirected to the New Member Registration Form.</strong></p>
     </div>
   </div>
-
+ 
   <script>
+    //  ✅ Configuration - Replace with your actual Google Apps Script URL
+    const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+    const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
+ 
+    //  ✅ Optimized function to get member names with caching
+    async function getMemberNames(forceRefresh = false) {
+      const cached = localStorage.getItem('memberNames');
+      const cachedVersion = localStorage.getItem('memberNamesVersion');
+      const cacheTime = localStorage.getItem('memberNamesTime');
+     
+      if (!forceRefresh && cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
+        console.log('Using cached member names');
+        return JSON.parse(cached);
+      }
+     
+      console.log('Fetching fresh member names from server');
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getMemberNames');
+        const data = await response.json();
+       
+        if (data.error) {
+          throw new Error(data.error);
+        }
+       
+        //  ✅ Store with version
+        localStorage.setItem('memberNames', JSON.stringify(data.names));
+        localStorage.setItem('memberNamesVersion', data.version.toString());
+        localStorage.setItem('memberNamesTime', Date.now().toString());
+       
+        return data.names;
+      } catch (error) {
+        console.error('Error fetching member names:', error);
+        // Return cached data if available, even if expired
+        return cached ? JSON.parse(cached) : [];
+      }
+    }
+ 
+    //  ✅ Optimized function to get race names with caching
+    async function getRaceNames(forceRefresh = false) {
+      const cached = localStorage.getItem('raceNames');
+      const cachedVersion = localStorage.getItem('raceNamesVersion');
+      const cacheTime = localStorage.getItem('raceNamesTime');
+     
+      if (!forceRefresh && cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
+        console.log('Using cached race names');
+        return JSON.parse(cached);
+      }
+     
+      console.log('Fetching fresh race names from server');
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getRaceNames');
+        const data = await response.json();
+       
+        if (data.error) {
+          throw new Error(data.error);
+        }
+       
+        //  ✅ Store with version
+        localStorage.setItem('raceNames', JSON.stringify(data.names));
+        localStorage.setItem('raceNamesVersion', data.version.toString());
+        localStorage.setItem('raceNamesTime', Date.now().toString());
+       
+        return data.names;
+      } catch (error) {
+        console.error('Error fetching race names:', error);
+        // Return cached data if available, even if expired
+        return cached ? JSON.parse(cached) : [];
+      }
+    }
+ 
+    //  ✅ Pre-load data when page loads (optional but recommended)
+    window.addEventListener('DOMContentLoaded', async () => {
+      console.log('Pre-loading member and race names...');
+      try {
+        await Promise.all([
+          getMemberNames(false),
+          getRaceNames(false)
+        ]);
+        console.log('Pre-loading complete!');
+      } catch (error) {
+        console.error('Pre-loading failed:', error);
+      }
+    });
+ 
+    // Modal functions
     function openModal() {
       document.getElementById("memberModal").style.display = "block";
     }
-
+ 
     function closeModal() {
       document.getElementById("memberModal").style.display = "none";
       setTimeout(() => {
         window.location.href = "new_member_registration.html";
       }, 300);
     }
-
+ 
     window.onclick = function(event) {
       const modal = document.getElementById("memberModal");
       if (event.target === modal) {
@@ -147,7 +241,7 @@
         }, 300);
       }
     }
-
+ 
     document.addEventListener("keydown", function(e) {
       if (e.key === "Escape") {
         closeModal();
@@ -156,3 +250,4 @@
   </script>
 </body>
 </html>
+ 
