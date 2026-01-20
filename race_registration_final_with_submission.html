@@ -1,335 +1,398 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Race Registration</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Race Registration</title>
  
-  <!-- Select2 CSS -->
-  <link href=https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css rel="stylesheet" />
+<!-- Select2 CSS -->
+<link href=https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css rel="stylesheet" />
  
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      font-size: 20px;
-      background-color: #fff8f5;
-      color: #4b1c1c;
-    }
-    h2 {
-      font-size: 26px;
-      color: maroon;
-      margin-top: 30px;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-      color: #4b1c1c;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 20px;
-      margin-top: 5px;
-      border: 1px solid maroon;
-      border-radius: 5px;
-    }
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 10px;
-      font-size: 20px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 15px;
-      font-size: 22px;
-      background-color: maroon;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #a52a2a;
-    }
-    .loading-indicator {
-      display: inline-block;
-      margin-left: 10px;
-      color: #666;
-      font-size: 14px;
-    }
-    .cache-info {
-      background: #e8f5e9;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      color: #2e7d32;
-      display: none;
-    }
-  </style>
+<style>
+body {
+font-family: Arial, sans-serif;
+padding: 20px;
+font-size: 20px;
+background-color: #fff8f5;
+color: #4b1c1c;
+}
+ 
+h2 {
+font-size: 26px;
+color: maroon;
+margin-top: 30px;
+}
+ 
+label {
+display: block;
+margin-top: 15px;
+font-weight: bold;
+color: #4b1c1c;
+}
+ 
+input, select, textarea {
+width: 100%;
+padding: 10px;
+font-size: 20px;
+margin-top: 5px;
+border: 1px solid maroon;
+border-radius: 5px;
+}
+ 
+.checkbox-group {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+margin-top: 10px;
+font-size: 20px;
+}
+ 
+.checkbox-group.disabled {
+opacity: 0.5;
+pointer-events: none;
+}
+ 
+button {
+margin-top: 20px;
+padding: 15px;
+font-size: 22px;
+background-color: maroon;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+ 
+button:hover {
+background-color: #a52a2a;
+}
+ 
+.loading-indicator {
+display: inline-block;
+margin-left: 10px;
+color: #666;
+font-size: 14px;
+}
+ 
+.cache-info {
+background: #e8f5e9;
+padding: 10px;
+border-radius: 5px;
+margin-bottom: 20px;
+font-size: 14px;
+color: #2e7d32;
+display: none;
+}
+ 
+.availability-section {
+margin-top: 15px;
+}
+ 
+.availability-section.hidden {
+display: none;
+}
+</style>
 </head>
+ 
 <body>
-  <h2>Race Registration</h2>
+<h2>Race Registration</h2>
  
-  <div id="cacheInfo" class="cache-info"></div>
+<div id="cacheInfo" class="cache-info"></div>
  
-  <form id="raceForm">
-    <input type="hidden" name="action" value="registerRace">
+<form id="raceForm">
+<input type="hidden" name="action" value="registerRace">
  
-    <label for="memberDropdown">Name</label>
-    <select id="memberDropdown" name="name" required>
-      <option value="">Loading names...</option>
-    </select>
+<label for="memberDropdown">Name</label>
+<select id="memberDropdown" name="name" required>
+<option value="">Loading names...</option>
+</select>
  
-    <label for="raceName">Race Name</label>
-    <select id="raceName" name="raceName" required>
-      <option value="">Loading races...</option>
-    </select>
+<label for="raceName">Race Name</label>
+<select id="raceName" name="raceName" required>
+<option value="">Loading races...</option>
+</select>
  
-    <label>Weight (kg)
-      <input type="number" name="raceWeight" min="30" max="150" required>
-    </label>
+<label>Weight (kg)
+<input type="number" name="raceWeight" min="30" max="150" required>
+</label>
  
-    <label>📅 Availability</label>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="availability" value="Day 1 AM"> Day 1 AM</label>
-      <label><input type="checkbox" name="availability" value="Day 1 PM"> Day 1 PM</label>
-      <label><input type="checkbox" name="availability" value="Day 2 AM"> Day 2 AM</label>
-      <label><input type="checkbox" name="availability" value="Day 2 PM"> Day 2 PM</label>
-    </div>
+<label for="raceLocation">Race Location</label>
+<select id="raceLocation" name="raceLocation" required>
+<option value="">-- Select Location --</option>
+<option value="Local">Local</option>
+<option value="Overseas">Overseas</option>
+</select>
  
-    <label>🛶 Paddling Side (Race)</label>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="paddlingSideRace" value="LEFT"> LEFT</label>
-      <label><input type="checkbox" name="paddlingSideRace" value="RIGHT"> RIGHT</label>
-    </div>
+<div id="availabilitySection" class="availability-section hidden">
+<label>📅 Availability</label>
+<div class="checkbox-group" id="availabilityCheckboxes">
+<label><input type="checkbox" name="availability" value="Day 1 AM"> Day 1 AM</label>
+<label><input type="checkbox" name="availability" value="Day 1 PM"> Day 1 PM</label>
+<label><input type="checkbox" name="availability" value="Day 2 AM"> Day 2 AM</label>
+<label><input type="checkbox" name="availability" value="Day 2 PM"> Day 2 PM</label>
+</div>
+</div>
  
-    <label for="remarks">Remarks</label>
-    <textarea id="remarks" name="remarks" rows="4" placeholder="Notes or updates on new certification (if any)"></textarea>
+<label>🛶 Paddling Side (Race)</label>
+<div class="checkbox-group">
+<label><input type="checkbox" name="paddlingSideRace" value="LEFT"> LEFT</label>
+<label><input type="checkbox" name="paddlingSideRace" value="RIGHT"> RIGHT</label>
+</div>
  
-    <button type="submit">Submit</button>
-  </form>
+<label for="remarks">Remarks</label>
+<textarea id="remarks" name="remarks" rows="4" placeholder="Notes or updates on new certification (if any)"></textarea>
  
-  <div style="text-align:center; margin-top:40px;">
-    <button onclick="location.href='welcome_page.html'" style="font-size:20px; padding:10px 20px; background-color:maroon; color:white; border:none; border-radius:5px;">Back to Home</button>
-  </div>
+<button type="submit">Submit</button>
+</form>
  
-  <!-- jQuery & Select2 JS -->
-  <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
-  <script src=https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js></script>
+<div style="text-align:center; margin-top:40px;">
+<button onclick="location.href='welcome_page.html'" style="font-size:20px; padding:10px 20px; background-color:maroon; color:white; border:none; border-radius:5px;">Back to Home</button>
+</div>
  
-  <script>
-    const baseURL = 'https://script.google.com/macros/s/AKfycbwedTPQS_WuNqSBb0H33Jh9Oo_MoXHPmkvD4VetXPeKV9kRoLSguKTMUKJLw5tQP2Udvw/exec';
-    const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
+<!-- jQuery & Select2 JS -->
+<script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js></script>
  
-    //  ✅ OPTIMIZED: Get member names with caching
-    async function getMemberNames(forceRefresh = false) {
-      const cached = localStorage.getItem('memberNames');
-      const cachedVersion = localStorage.getItem('memberNamesVersion');
-      const cacheTime = localStorage.getItem('memberNamesTime');
-     
-      if (!forceRefresh && cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
-        console.log('✅ Using cached member names');
-        showCacheInfo('Member names loaded from cache (instant)');
-        return JSON.parse(cached);
-      }
-     
-      console.log('🔄 Fetching fresh member names from server');
-      try {
-        const response = await fetch(`${baseURL}?action=getMemberNames`);
-        const data = await response.json();
-       
-        if (data.error) {
-          throw new Error(data.error);
-        }
-       
-        //  ✅ Store with version
-        localStorage.setItem('memberNames', JSON.stringify(data.names));
-        localStorage.setItem('memberNamesVersion', data.version.toString());
-        localStorage.setItem('memberNamesTime', Date.now().toString());
-       
-        showCacheInfo('Member names loaded from server and cached');
-        return data.names;
-      } catch (error) {
-        console.error('Error fetching member names:', error);
-        // Return cached data if available, even if expired
-        if (cached) {
-          console.log('⚠️ Using expired cache due to error');
-          showCacheInfo('Using cached data (server unavailable)', true);
-          return JSON.parse(cached);
-        }
-        throw error;
-      }
-    }
+<script>
+const baseURL = 'https://script.google.com/macros/s/AKfycbwedTPQS_WuNqSBb0H33Jh9Oo_MoXHPmkvD4VetXPeKV9kRoLSguKTMUKJLw5tQP2Udvw/exec';
+const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
  
-    //  ✅ OPTIMIZED: Get race names with caching
-    async function getRaceNames(forceRefresh = false) {
-      const cached = localStorage.getItem('raceNames');
-      const cachedVersion = localStorage.getItem('raceNamesVersion');
-      const cacheTime = localStorage.getItem('raceNamesTime');
-     
-      if (!forceRefresh && cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
-        console.log('✅ Using cached race names');
-        showCacheInfo('Race names loaded from cache (instant)');
-        return JSON.parse(cached);
-      }
-     
-      console.log('🔄 Fetching fresh race names from server');
-      try {
-        const response = await fetch(`${baseURL}?action=getRaceNames`);
-        const data = await response.json();
-       
-        if (data.error) {
-          throw new Error(data.error);
-        }
-       
-        //  ✅ Store with version
-        localStorage.setItem('raceNames', JSON.stringify(data.names));
-        localStorage.setItem('raceNamesVersion', data.version.toString());
-        localStorage.setItem('raceNamesTime', Date.now().toString());
-       
-        showCacheInfo('Race names loaded from server and cached');
-        return data.names;
-      } catch (error) {
-        console.error('Error fetching race names:', error);
-        // Return cached data if available, even if expired
-        if (cached) {
-          console.log('⚠️ Using expired cache due to error');
-          showCacheInfo('Using cached data (server unavailable)', true);
-          return JSON.parse(cached);
-        }
-        throw error;
-      }
-    }
+// ✅ OPTIMIZED: Get member names with caching
+async function getMemberNames(forceRefresh = false) {
+const cached = localStorage.getItem('memberNames');
+const cachedVersion = localStorage.getItem('memberNamesVersion');
+const cacheTime = localStorage.getItem('memberNamesTime');
  
-    //  ✅ Show cache information to user
-    function showCacheInfo(message, isWarning = false) {
-      const cacheInfo = document.getElementById('cacheInfo');
-      cacheInfo.textContent = message;
-      cacheInfo.style.display = 'block';
-      cacheInfo.style.background = isWarning ? '#fff3cd' : '#e8f5e9';
-      cacheInfo.style.color = isWarning ? '#856404' : '#2e7d32';
-     
-      setTimeout(() => {
-        cacheInfo.style.display = 'none';
-      }, 3000);
-    }
+if (!forceRefresh && cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
+console.log('✅ Using cached member names');
+showCacheInfo('Member names loaded from cache (instant)');
+return JSON.parse(cached);
+}
  
-    //  ✅ Load member names with optimized caching
-    async function loadMemberNames() {
-      try {
-        const names = await getMemberNames(false);
-        const dropdown = document.getElementById('memberDropdown');
-        dropdown.innerHTML = '<option value="">-- Select Name --</option>';
-       
-        names.forEach(name => {
-          const option = document.createElement('option');
-          option.value = name;
-          option.textContent = name;
-          dropdown.appendChild(option);
-        });
-       
-        $('#memberDropdown').select2({
-          placeholder: "-- Select Name --",
-          allowClear: true,
-          width: '100%'
-        });
-      } catch (error) {
-        console.error('Error loading member names:', error);
-        const dropdown = document.getElementById('memberDropdown');
-        dropdown.innerHTML = '<option value="">Unable to load names, please try again later.</option>';
-        alert('Error loading member names. Please try again later.');
-      }
-    }
+console.log('🔄 Fetching fresh member names from server');
+try {
+const response = await fetch(`${baseURL}?action=getMemberNames`);
+const data = await response.json();
  
-    //  ✅ Load race names with optimized caching
-    async function loadRaceNames() {
-      try {
-        const races = await getRaceNames(false);
-        const dropdown = document.getElementById('raceName');
-        dropdown.innerHTML = '<option value="">-- Select Race --</option>';
-       
-        races.forEach(race => {
-          const option = document.createElement('option');
-          option.value = race;
-          option.textContent = race;
-          dropdown.appendChild(option);
-        });
-       
-        $('#raceName').select2({
-          placeholder: "-- Select Race --",
-          allowClear: true,
-          width: '100%'
-        });
-      } catch (error) {
-        console.error('Error loading race names:', error);
-        const dropdown = document.getElementById('raceName');
-        dropdown.innerHTML = '<option value="">Unable to load races, please try again later.</option>';
-        alert('Error loading race names. Please try again later.');
-      }
-    }
+if (data.error) {
+throw new Error(data.error);
+}
  
-    //  ✅ Load both dropdowns on page load
-    window.addEventListener('DOMContentLoaded', async () => {
-      console.log('🚀 Loading race registration form...');
-      await Promise.all([
-        loadMemberNames(),
-        loadRaceNames()
-      ]);
-      console.log('✅ Form loaded successfully!');
-    });
+localStorage.setItem('memberNames', JSON.stringify(data.names));
+localStorage.setItem('memberNamesVersion', data.version.toString());
+localStorage.setItem('memberNamesTime', Date.now().toString());
  
-    // Handle form submission
-    document.getElementById('raceForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
+showCacheInfo('Member names loaded from server and cached');
+return data.names;
+} catch (error) {
+console.error('Error fetching member names:', error);
+if (cached) {
+console.log('⚠️ Using expired cache due to error');
+showCacheInfo('Using cached data (server unavailable)', true);
+return JSON.parse(cached);
+}
+throw error;
+}
+}
  
-      formData.set('fullName', formData.get('name'));
-      formData.delete('name');
+// ✅ OPTIMIZED: Get race names with caching
+async function getRaceNames(forceRefresh = false) {
+const cached = localStorage.getItem('raceNames');
+const cachedVersion = localStorage.getItem('raceNamesVersion');
+const cacheTime = localStorage.getItem('raceNamesTime');
  
-      const availability = Array.from(document.querySelectorAll('input[name="availability"]:checked'))
-        .map(cb => cb.value)
-        .join(', ');
-      formData.set('availability', availability);
+if (!forceRefresh && cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
+console.log('✅ Using cached race names');
+showCacheInfo('Race names loaded from cache (instant)');
+return JSON.parse(cached);
+}
  
-      const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSideRace"]:checked'))
-        .map(cb => cb.value)
-        .join(', ');
-      formData.set('paddlingSideRace', paddlingSide);
+console.log('🔄 Fetching fresh race names from server');
+try {
+const response = await fetch(`${baseURL}?action=getRaceNames`);
+const data = await response.json();
  
-      const raceName = formData.get('raceName');
-      const fullName = formData.get('fullName');
-      const remarks = formData.get('remarks') || 'None';
+if (data.error) {
+throw new Error(data.error);
+}
  
-      fetch(baseURL, {
-        method: 'POST',
-        body: formData
-      })
-      .then(() => {
-        alert(`Thank you ${fullName}! You have registered for ${raceName}, and you are available on: ${availability}. Remarks: ${remarks}. Please screenshot this page for future reference.`);
-       
-        //  ✅ Clear cache after successful submission to ensure fresh data next time
-        localStorage.removeItem('memberNames');
-        localStorage.removeItem('memberNamesVersion');
-        localStorage.removeItem('memberNamesTime');
-        localStorage.removeItem('raceNames');
-        localStorage.removeItem('raceNamesVersion');
-        localStorage.removeItem('raceNamesTime');
-       
-        document.getElementById('raceForm').reset();
-        $('#memberDropdown').val(null).trigger('change');
-        $('#raceName').val(null).trigger('change');
-        window.location.href = 'index.html';
-      })
-      .catch(error => {
-        console.error('Error submitting form:', error);
-        alert('Submission failed. Please try again later.');
-      });
-    });
-  </script>
+localStorage.setItem('raceNames', JSON.stringify(data.names));
+localStorage.setItem('raceNamesVersion', data.version.toString());
+localStorage.setItem('raceNamesTime', Date.now().toString());
+ 
+showCacheInfo('Race names loaded from server and cached');
+return data.names;
+} catch (error) {
+console.error('Error fetching race names:', error);
+if (cached) {
+console.log('⚠️ Using expired cache due to error');
+showCacheInfo('Using cached data (server unavailable)', true);
+return JSON.parse(cached);
+}
+throw error;
+}
+}
+ 
+// ✅ Show cache information to user
+function showCacheInfo(message, isWarning = false) {
+const cacheInfo = document.getElementById('cacheInfo');
+cacheInfo.textContent = message;
+cacheInfo.style.display = 'block';
+cacheInfo.style.background = isWarning ? '#fff3cd' : '#e8f5e9';
+cacheInfo.style.color = isWarning ? '#856404' : '#2e7d32';
+ 
+setTimeout(() => {
+cacheInfo.style.display = 'none';
+}, 3000);
+}
+ 
+// ✅ Load member names with optimized caching
+async function loadMemberNames() {
+try {
+const names = await getMemberNames(false);
+const dropdown = document.getElementById('memberDropdown');
+dropdown.innerHTML = '<option value="">-- Select Name --</option>';
+ 
+names.forEach(name => {
+const option = document.createElement('option');
+option.value = name;
+option.textContent = name;
+dropdown.appendChild(option);
+});
+ 
+$('#memberDropdown').select2({
+placeholder: "-- Select Name --",
+allowClear: true,
+width: '100%'
+});
+} catch (error) {
+console.error('Error loading member names:', error);
+const dropdown = document.getElementById('memberDropdown');
+dropdown.innerHTML = '<option value="">Unable to load names, please try again later.</option>';
+alert('Error loading member names. Please try again later.');
+}
+}
+ 
+// ✅ Load race names with optimized caching
+async function loadRaceNames() {
+try {
+const races = await getRaceNames(false);
+const dropdown = document.getElementById('raceName');
+dropdown.innerHTML = '<option value="">-- Select Race --</option>';
+ 
+races.forEach(race => {
+const option = document.createElement('option');
+option.value = race;
+option.textContent = race;
+dropdown.appendChild(option);
+});
+ 
+$('#raceName').select2({
+placeholder: "-- Select Race --",
+allowClear: true,
+width: '100%'
+});
+} catch (error) {
+console.error('Error loading race names:', error);
+const dropdown = document.getElementById('raceName');
+dropdown.innerHTML = '<option value="">Unable to load races, please try again later.</option>';
+alert('Error loading race names. Please try again later.');
+}
+}
+ 
+// ✅ Load both dropdowns on page load
+window.addEventListener('DOMContentLoaded', async () => {
+console.log('🚀 Loading race registration form...');
+await Promise.all([
+loadMemberNames(),
+loadRaceNames()
+]);
+console.log('✅ Form loaded successfully!');
+ 
+// ✅ Handle Race Location change - moved here to ensure DOM is ready
+const raceLocationDropdown = document.getElementById('raceLocation');
+raceLocationDropdown.addEventListener('change', function() {
+const availabilitySection = document.getElementById('availabilitySection');
+const availabilityCheckboxes = document.querySelectorAll('input[name="availability"]');
+ 
+console.log('Race location changed to:', this.value);
+ 
+if (this.value === 'Local') {
+availabilitySection.classList.remove('hidden');
+console.log('Showing availability section');
+} else if (this.value === 'Overseas') {
+availabilitySection.classList.add('hidden');
+availabilityCheckboxes.forEach(checkbox => {
+checkbox.checked = false;
+});
+console.log('Hiding availability section');
+} else {
+availabilitySection.classList.add('hidden');
+}
+});
+});
+ 
+// Handle form submission
+document.getElementById('raceForm').addEventListener('submit', function(e) {
+e.preventDefault();
+const formData = new FormData(this);
+ 
+formData.set('fullName', formData.get('name'));
+formData.delete('name');
+ 
+const raceLocation = formData.get('raceLocation');
+let availability = 'N/A (Overseas)';
+ 
+if (raceLocation === 'Local') {
+availability = Array.from(document.querySelectorAll('input[name="availability"]:checked'))
+.map(cb => cb.value)
+.join(', ');
+if (!availability) {
+alert('Please select at least one availability slot for local races.');
+return;
+}
+}
+formData.set('availability', availability);
+ 
+const paddlingSide = Array.from(document.querySelectorAll('input[name="paddlingSideRace"]:checked'))
+.map(cb => cb.value)
+.join(', ');
+formData.set('paddlingSideRace', paddlingSide);
+ 
+const raceName = formData.get('raceName');
+const fullName = formData.get('fullName');
+const remarks = formData.get('remarks') || 'None';
+ 
+fetch(baseURL, {
+method: 'POST',
+body: formData
+})
+.then(() => {
+let message = `Thank you ${fullName}! You have registered for ${raceName} (${raceLocation}).`;
+if (raceLocation === 'Local') {
+message += ` You are available on: ${availability}.`;
+}
+message += ` Remarks: ${remarks}. Please screenshot this page for future reference.`;
+alert(message);
+ 
+localStorage.removeItem('memberNames');
+localStorage.removeItem('memberNamesVersion');
+localStorage.removeItem('memberNamesTime');
+localStorage.removeItem('raceNames');
+localStorage.removeItem('raceNamesVersion');
+localStorage.removeItem('raceNamesTime');
+ 
+document.getElementById('raceForm').reset();
+$('#memberDropdown').val(null).trigger('change');
+$('#raceName').val(null).trigger('change');
+window.location.href = 'index.html';
+})
+.catch(error => {
+console.error('Error submitting form:', error);
+alert('Submission failed. Please try again later.');
+});
+});
+</script>
 </body>
 </html>
