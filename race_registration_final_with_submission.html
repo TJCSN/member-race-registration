@@ -1,6 +1,4 @@
-Micron Confidential
 
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,6 +92,27 @@ margin-top: 15px;
 .availability-section.hidden {
 display: none;
 }
+ 
+.location-badge {
+display: inline-block;
+padding: 5px 12px;
+margin-left: 10px;
+font-size: 16px;
+border-radius: 5px;
+font-weight: bold;
+}
+ 
+.location-local {
+background-color: #d4edda;
+color: #155724;
+border: 1px solid #c3e6cb;
+}
+ 
+.location-overseas {
+background-color: #d1ecf1;
+color: #0c5460;
+border: 1px solid #bee5eb;
+}
 </style>
 </head>
  
@@ -104,6 +123,7 @@ display: none;
  
 <form id="raceForm">
 <input type="hidden" name="action" value="registerRace">
+<input type="hidden" id="raceLocation" name="raceLocation" value="">
  
 <label for="memberDropdown">Name</label>
 <select id="memberDropdown" name="name" required>
@@ -118,13 +138,6 @@ display: none;
 <label>Weight (kg)
 <input type="number" name="raceWeight" min="30" max="200" required>
 </label>
- 
-<label for="raceLocation">Race Location</label>
-<select id="raceLocation" name="raceLocation" required>
-<option value="">-- Select Location --</option>
-<option value="Local">Local</option>
-<option value="Overseas">Overseas</option>
-</select>
  
 <div id="availabilitySection" class="availability-section hidden">
 <label>📅 Availability</label>
@@ -159,6 +172,9 @@ display: none;
 <script>
 const baseURL = 'https://script.google.com/macros/s/AKfycbwedTPQS_WuNqSBb0H33Jh9Oo_MoXHPmkvD4VetXPeKV9kRoLSguKTMUKJLw5tQP2Udvw/exec';
 const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
+ 
+// Store race data globally
+let raceData = [];
  
 // ✅ OPTIMIZED: Get member names with caching
 async function getMemberNames(forceRefresh = false) {
@@ -219,12 +235,12 @@ if (data.error) {
 throw new Error(data.error);
 }
  
-localStorage.setItem('raceNames', JSON.stringify(data.names));
+localStorage.setItem('raceNames', JSON.stringify(data.races));
 localStorage.setItem('raceNamesVersion', data.version.toString());
 localStorage.setItem('raceNamesTime', Date.now().toString());
  
 showCacheInfo('Race names loaded from server and cached');
-return data.names;
+return data.races;
 } catch (error) {
 console.error('Error fetching race names:', error);
 if (cached) {
@@ -276,24 +292,52 @@ alert('Error loading member names. Please try again later.');
 }
 }
  
+// ✅ Format race option with location badge
+function formatRaceOption(race) {
+if (!race.id) return race.text;
+ 
+const raceInfo = raceData.find(r => r.name === race.text);
+if (!raceInfo) return race.text;
+ 
+const $result = $('<span></span>');
+$result.text(race.text);
+ 
+const $badge = $('<span></span>')
+.addClass('location-badge')
+.addClass(raceInfo.location === 'Local' ? 'location-local' : 'location-overseas')
+.text(raceInfo.location);
+$result.append($badge);
+ 
+return $result;
+}
+ 
+// ✅ Format selected race
+function formatRaceSelection(race) {
+return race.text;
+}
+ 
 // ✅ Load race names with optimized caching
 async function loadRaceNames() {
 try {
 const races = await getRaceNames(false);
+raceData = races; // Store globally
 const dropdown = document.getElementById('raceName');
 dropdown.innerHTML = '<option value="">-- Select Race --</option>';
  
 races.forEach(race => {
 const option = document.createElement('option');
-option.value = race;
-option.textContent = race;
+option.value = race.name;
+option.setAttribute('data-location', race.location);
+option.textContent = race.name;
 dropdown.appendChild(option);
 });
  
 $('#raceName').select2({
 placeholder: "-- Select Race --",
 allowClear: true,
-width: '100%'
+width: '100%',
+templateResult: formatRaceOption,
+templateSelection: formatRaceSelection
 });
 } catch (error) {
 console.error('Error loading race names:', error);
@@ -312,25 +356,34 @@ loadRaceNames()
 ]);
 console.log('✅ Form loaded successfully!');
  
-// ✅ Handle Race Location change - moved here to ensure DOM is ready
-const raceLocationDropdown = document.getElementById('raceLocation');
-raceLocationDropdown.addEventListener('change', function() {
+// ✅ Handle Race Name change - auto-detect location
+const raceNameDropdown = document.getElementById('raceName');
+raceNameDropdown.addEventListener('change', function() {
+const selectedOption = this.options[this.selectedIndex];
+const location = selectedOption.getAttribute('data-location');
 const availabilitySection = document.getElementById('availabilitySection');
 const availabilityCheckboxes = document.querySelectorAll('input[name="availability"]');
+const hiddenLocationInput = document.getElementById('raceLocation');
  
-console.log('Race location changed to:', this.value);
+console.log('Race selected:', this.value, 'Location:', location);
  
-if (this.value === 'Local') {
+// Set hidden input value
+hiddenLocationInput.value = location || '';
+ 
+if (location === 'Local') {
 availabilitySection.classList.remove('hidden');
-console.log('Showing availability section');
-} else if (this.value === 'Overseas') {
+console.log('Showing availability section for Local race');
+} else if (location === 'Overseas') {
 availabilitySection.classList.add('hidden');
 availabilityCheckboxes.forEach(checkbox => {
 checkbox.checked = false;
 });
-console.log('Hiding availability section');
+console.log('Hiding availability section for Overseas race');
 } else {
 availabilitySection.classList.add('hidden');
+availabilityCheckboxes.forEach(checkbox => {
+checkbox.checked = false;
+});
 }
 });
 });
@@ -398,4 +451,3 @@ alert('Submission failed. Please try again later.');
 </script>
 </body>
 </html>
- 
