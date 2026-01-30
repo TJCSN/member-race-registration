@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Member Registration - Seahawk Sports Club</title>
+    <title>Race Registration - Seahawk Sports Club</title>
     <style>
         * {
             margin: 0;
@@ -103,18 +103,18 @@
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
         }
 
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
         .form-group small {
             display: block;
             margin-top: 8px;
             color: #666;
             font-size: 16px;
             line-height: 1.4;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
         }
 
         .checkbox-group {
@@ -142,7 +142,7 @@
             border-color: #667eea;
         }
 
-        /* Custom checkbox styling for paddling side */
+        /* Custom checkbox styling */
         .checkbox-group input[type="checkbox"] {
             appearance: none;
             -webkit-appearance: none;
@@ -193,48 +193,6 @@
         /* Update label structure to work with the new checkbox styling */
         .checkbox-group label span {
             transition: all 0.3s ease;
-        }
-
-        .terms-box {
-            background-color: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .terms-box p {
-            font-size: 17px;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-        }
-
-        .terms-acceptance {
-            display: flex;
-            align-items: flex-start;
-            padding: 18px;
-            background-color: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
-
-        .terms-acceptance input[type="checkbox"] {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            cursor: pointer;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .terms-acceptance label {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            cursor: pointer;
-            line-height: 1.5;
         }
 
         .submit-btn {
@@ -337,6 +295,10 @@
             font-weight: 600;
         }
 
+        #availabilitySection {
+            display: none;
+        }
+
         .form-group label.required::after {
             content: " *";
             color: #dc3545;
@@ -346,6 +308,7 @@
         @media (max-width: 768px) {
             body {
                 padding: 10px;
+                font-size: 18px;
             }
 
             .form-container {
@@ -356,8 +319,28 @@
                 font-size: 28px;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
+            .header p {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 22px;
+            }
+
+            .form-group label {
+                font-size: 18px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 18px;
+                padding: 14px;
+            }
+
+            .checkbox-group label {
+                font-size: 17px;
+                padding: 14px;
             }
 
             .submit-btn {
@@ -374,14 +357,38 @@
             .header h1 {
                 font-size: 24px;
             }
+
+            .info-box {
+                padding: 15px;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                border-width: 3px;
+            }
+
+            .checkbox-group label {
+                border-width: 3px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚣 Member Registration</h1>
-            <p>Seahawk Sports Club - Join Our Team</p>
+            <h1>🏆 Race Registration</h1>
+            <p>Seahawk Sports Club - Register for Upcoming Races</p>
         </div>
 
         <div class="form-container">
@@ -392,289 +399,287 @@
             </div>
 
             <div class="info-box">
-                <p><strong>📌 Note:</strong> All fields marked with * are required.</p>
-                <p><strong>💡 Tip:</strong> You can update your information by submitting the form again with the same name.</p>
+                <p><strong>📌 Important:</strong> You must be a registered member before signing up for races.</p>
+                <p><strong>💡 Tip:</strong> You can update your registration by submitting the form again with the same name.</p>
             </div>
 
-            <form id="memberRegistrationForm">
-                <!-- Personal Information Section -->
-                <div class="section-title">👤 Personal Information</div>
+            <form id="raceRegistrationForm">
+                <!-- Race Selection Section -->
+                <div class="section-title">🏁 Race Information</div>
 
                 <div class="form-group">
-                    <label for="fullName" class="required">Full Name (as per NRIC)</label>
-                    <input type="text" id="fullName" name="fullName" required aria-required="true">
-                </div>
-
-                <div class="form-group">
-                    <label for="preferredName">Preferred Name (optional)</label>
-                    <input type="text" id="preferredName" name="preferredName">
-                </div>
-
-                <div class="form-group">
-                    <label for="nric" class="required">Full NRIC</label>
-                    <input type="text" id="nric" name="nric" required aria-required="true" placeholder="S1234567A">
-                    <small>Format: S1234567A</small>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="gender" class="required">Gender</label>
-                        <select id="gender" name="gender" required aria-required="true">
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dob" class="required">Date of Birth</label>
-                        <input type="date" id="dob" name="dob" required aria-required="true">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="jerseySize" class="required">Jersey Size</label>
-                        <select id="jerseySize" name="jerseySize" required aria-required="true">
-                            <option value="">Select Size</option>
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="XXXL">XXXL</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="weight" class="required">Weight (kg)</label>
-                        <input type="number" id="weight" name="weight" min="30" max="200" step="0.1" required aria-required="true" inputmode="decimal">
-                        <small>Helps with boat balancing</small>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="postalCode" class="required">Postal Code</label>
-                        <input type="text" id="postalCode" name="postalCode" required aria-required="true" pattern="\d{6}" placeholder="123456" inputmode="numeric">
-                        <small>6-digit Singapore postal code</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nationality" class="required">Nationality</label>
-                        <input type="text" id="nationality" name="nationality" required aria-required="true" placeholder="e.g., Singaporean, Malaysian">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="ethnicity" class="required">Ethnicity</label>
-                    <select id="ethnicity" name="ethnicity" required aria-required="true">
-                        <option value="">Select Ethnicity</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Malay">Malay</option>
-                        <option value="Indian">Indian</option>
-                        <option value="Eurasian">Eurasian</option>
-                        <option value="Other">Other</option>
+                    <label for="raceName" class="required">Select Race</label>
+                    <select id="raceName" name="raceName" required aria-required="true">
+                        <option value="">Loading races...</option>
                     </select>
+                    <small>Choose the race you want to participate in</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="contactNumber" class="required">Contact Number</label>
-                    <input type="tel" id="contactNumber" name="contactNumber" required aria-required="true" inputmode="tel" placeholder="81234567">
-                    <small>8-10 digits, no spaces or dashes</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="email" class="required">Email Address</label>
-                    <input type="email" id="email" name="email" required aria-required="true" inputmode="email">
-                </div>
-
-                <div class="form-group">
-                    <label for="medicalHistory">Medical History</label>
-                    <textarea id="medicalHistory" name="medicalHistory" rows="1" placeholder=""></textarea>
-                </div>
-
-                <!-- Emergency Contact Section -->
-                <div class="section-title">🚨 Emergency Contact</div>
-
-                <div class="form-group">
-                    <label for="emergencyContactName" class="required">Emergency Contact Name</label>
-                    <input type="text" id="emergencyContactName" name="emergencyContactName" required aria-required="true">
-                </div>
-
-                <div class="form-group">
-                    <label for="emergencyRelationship" class="required">Relationship</label>
-                    <select id="emergencyRelationship" name="emergencyRelationship" required aria-required="true">
-                        <option value="">Select Relationship</option>
-                        <option value="Parent">Parent</option>
-                        <option value="Spouse">Spouse</option>
-                        <option value="Sibling">Sibling</option>
-                        <option value="Child">Child</option>
-                        <option value="Friend">Friend</option>
-                        <option value="Other">Other</option>
+                    <label for="fullName" class="required">Your Name</label>
+                    <select id="fullName" name="fullName" required aria-required="true">
+                        <option value="">Loading members...</option>
                     </select>
+                    <small>Select your registered name</small>
                 </div>
+
+                <!-- Race Details Section -->
+                <div class="section-title">📋 Race Details</div>
 
                 <div class="form-group">
-                    <label for="emergencyContactNumber" class="required">Emergency Contact Number</label>
-                    <input type="tel" id="emergencyContactNumber" name="emergencyContactNumber" required aria-required="true" inputmode="tel" placeholder="81234567">
-                    <small>8-10 digits, no spaces or dashes</small>
+                    <label for="raceWeight" class="required">Weight (kg)</label>
+                    <input type="number" id="raceWeight" name="raceWeight" min="30" max="200" step="0.1" required aria-required="true" inputmode="decimal">
+                    <small>Your current weight for this race</small>
                 </div>
 
-                <!-- Experience/Certification Section -->
-                <div class="section-title">🏆 Experience/Certification</div>
+                <!-- Availability Section (Only for Local Races) -->
+                <div id="availabilitySection">
+                    <div class="form-group">
+                        <label class="required">Availability</label>
+                        <div class="checkbox-group" role="group" aria-label="Select your availability">
+                            <label>
+                                <input type="checkbox" name="availability" value="Day 1 AM" aria-label="Day 1 AM">
+                                <span>Day 1 AM</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="availability" value="Day 1 PM" aria-label="Day 1 PM">
+                                <span>Day 1 PM</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="availability" value="Day 2 AM" aria-label="Day 2 AM">
+                                <span>Day 2 AM</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="availability" value="Day 2 PM" aria-label="Day 2 PM">
+                                <span>Day 2 PM</span>
+                            </label>
+                        </div>
+                        <small>Select all time slots you are available</small>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="required">Paddling Side</label>
                     <div class="checkbox-group" role="group" aria-label="Select your paddling side">
                         <label>
-                            <input type="checkbox" name="paddlingSide" value="LEFT" aria-label="Left side">
+                            <input type="checkbox" name="paddlingSideRace" value="LEFT" aria-label="Left side">
                             <span>Left</span>
                         </label>
                         <label>
-                            <input type="checkbox" name="paddlingSide" value="RIGHT" aria-label="Right side">
+                            <input type="checkbox" name="paddlingSideRace" value="RIGHT" aria-label="Right side">
                             <span>Right</span>
                         </label>
                     </div>
                     <small>Select the side(s) you can paddle on (you can select both)</small>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="certifiedHelmsman" class="required">Certified Helmsman</label>
-                        <select id="certifiedHelmsman" name="certifiedHelmsman" required aria-required="true">
-                            <option value="">Select Option</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="certifiedCoach" class="required">Certified Coach</label>
-                        <select id="certifiedCoach" name="certifiedCoach" required aria-required="true">
-                            <option value="">Select Level</option>
-                            <option value="None">None</option>
-                            <option value="R1">R1</option>
-                            <option value="L1">L1</option>
-                            <option value="L2">L2</option>
-                            <option value="L3">L3</option>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="form-group">
-                    <label for="swimmingAbility" class="required">Can you swim? (with Personal Floatation Device)</label>
-                    <select id="swimmingAbility" name="swimmingAbility" required aria-required="true">
-                        <option value="">Select Option</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                        <option value="Can swim, cannot tread water">Can swim, cannot tread water</option>
-                    </select>
+                    <label for="remarks">Remarks</label>
+                    <textarea id="remarks" name="remarks" placeholder="Notes or updates on new certification (if any)" aria-label="Additional remarks"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="sdbaCard">SDBA Card Number</label>
-                    <input type="text" id="sdbaCard" name="sdbaCard" placeholder="">
-                    <small>Enter 'Nil' if you don't have an SDBA card</small>
-                </div>
-
-                <!-- Terms and Conditions Section -->
-                <div class="section-title">📋 Terms and Conditions</div>
-
-                <div class="terms-box">
-                    <p>By registering, you agree to abide by the club's safety rules, training commitments, and code of conduct. You also consent to the collection and use of your personal data for administrative and race-related purposes.</p>
-                </div>
-
-                <div class="terms-acceptance">
-                    <input type="checkbox" id="termsAccepted" name="termsAccepted" required aria-required="true">
-                    <label for="termsAccepted">I have read and agree to the Terms and Conditions *</label>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn" aria-label="Submit member registration">
-                    Submit Registration
+                <button type="submit" class="submit-btn" id="submitBtn" aria-label="Submit race registration">
+                    Submit Race Registration
                 </button>
             </form>
         </div>
     </div>
 
     <script>
-        // ✅ Configuration
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDDbIkH3pczW4nJGFhwIXSZaaCIBiYkz4MPrWXVVYbTFNaxyh-ZQPQZtY7iTrKHdIkBg/exec';
+        // ✅ Configuration - Replace with your actual Google Apps Script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUw1i5zJPoXlLz_rLlEZXd2HM0uzBtWQajXuQfYC4mpMHTaPs2zxMY5GaoTjvtkkDILQ/exec';
+        const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
 
-        // ✅ Setup form on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        let raceLocations = {}; // Store race locations
+
+        // ✅ Load member names and race names on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Page loaded, initializing...');
+            await loadMemberNames();
+            await loadRaceNames();
             setupFormHandlers();
         });
 
+        // ✅ Load member names from Google Sheets with caching
+        async function loadMemberNames() {
+            const fullNameSelect = document.getElementById('fullName');
+
+            // Check cache first
+            const cached = localStorage.getItem('memberNames');
+            const cacheTime = localStorage.getItem('memberNamesTime');
+            
+            if (cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
+                console.log('✅ Using cached member names');
+                const names = JSON.parse(cached);
+                populateMemberDropdown(names);
+                return;
+            }
+
+            console.log('🔄 Fetching fresh member names from server');
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getMemberNames&t=${Date.now()}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    fullNameSelect.innerHTML = '<option value="">Error loading members</option>';
+                    showMessage('Error loading member names: ' + data.error, 'error');
+                    return;
+                }
+
+                if (data.names && data.names.length > 0) {
+                    // Cache the data
+                    localStorage.setItem('memberNames', JSON.stringify(data.names));
+                    localStorage.setItem('memberNamesTime', Date.now().toString());
+                    
+                    populateMemberDropdown(data.names);
+                    console.log(`✅ Loaded ${data.names.length} member names`);
+                } else {
+                    fullNameSelect.innerHTML = '<option value="">No members found</option>';
+                }
+            } catch (error) {
+                console.error('❌ Error loading member names:', error);
+                fullNameSelect.innerHTML = '<option value="">Error loading members</option>';
+                showMessage('Network error loading member names. Please refresh the page.', 'error');
+            }
+        }
+
+        // ✅ Helper function to populate member dropdown
+        function populateMemberDropdown(names) {
+            const fullNameSelect = document.getElementById('fullName');
+            fullNameSelect.innerHTML = '<option value="">Select your name</option>';
+            names.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                fullNameSelect.appendChild(option);
+            });
+        }
+
+        // ✅ Load race names from Google Sheets with caching
+        async function loadRaceNames() {
+            const raceNameSelect = document.getElementById('raceName');
+
+            // Check cache first
+            const cached = localStorage.getItem('raceNames');
+            const cacheTime = localStorage.getItem('raceNamesTime');
+            
+            if (cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
+                console.log('✅ Using cached race names');
+                const races = JSON.parse(cached);
+                populateRaceDropdown(races);
+                return;
+            }
+
+            console.log('🔄 Fetching fresh race names from server');
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getRaceNames&t=${Date.now()}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    raceNameSelect.innerHTML = '<option value="">Error loading races</option>';
+                    showMessage('Error loading race names: ' + data.error, 'error');
+                    return;
+                }
+
+                if (data.races && data.races.length > 0) {
+                    // Cache the data
+                    localStorage.setItem('raceNames', JSON.stringify(data.races));
+                    localStorage.setItem('raceNamesTime', Date.now().toString());
+                    
+                    populateRaceDropdown(data.races);
+                    console.log(`✅ Loaded ${data.races.length} race events`);
+                } else {
+                    raceNameSelect.innerHTML = '<option value="">No races available</option>';
+                }
+            } catch (error) {
+                console.error('❌ Error loading race names:', error);
+                raceNameSelect.innerHTML = '<option value="">Error loading races</option>';
+                showMessage('Network error loading race names. Please refresh the page.', 'error');
+            }
+        }
+
+        // ✅ Helper function to populate race dropdown
+        function populateRaceDropdown(races) {
+            const raceNameSelect = document.getElementById('raceName');
+            raceNameSelect.innerHTML = '<option value="">Select a race</option>';
+            
+            races.forEach(race => {
+                const option = document.createElement('option');
+                option.value = race.name;
+                option.textContent = race.name;
+                option.dataset.location = race.location;
+                raceNameSelect.appendChild(option);
+
+                // Store race location
+                raceLocations[race.name] = race.location;
+            });
+        }
+
         // ✅ Setup form handlers
         function setupFormHandlers() {
-            const form = document.getElementById('memberRegistrationForm');
+            const form = document.getElementById('raceRegistrationForm');
             const submitBtn = document.getElementById('submitBtn');
             const messageDiv = document.getElementById('message');
             const loadingDiv = document.getElementById('loading');
+            const raceNameSelect = document.getElementById('raceName');
+            const availabilitySection = document.getElementById('availabilitySection');
 
-            // Form submission
+            // ✅ FIXED: Show/hide availability based on race location (removed required attribute)
+            raceNameSelect.addEventListener('change', function() {
+                const selectedRace = this.value;
+                const location = raceLocations[selectedRace];
+
+                console.log(`📍 Race selected: ${selectedRace}, Location: ${location}`);
+
+                if (location === 'Local') {
+                    availabilitySection.style.display = 'block';
+                } else {
+                    availabilitySection.style.display = 'none';
+                    // Uncheck all availability checkboxes for overseas races
+                    document.querySelectorAll('input[name="availability"]').forEach(cb => {
+                        cb.checked = false;
+                    });
+                }
+            });
+
+            // ✅ FIXED: Form submission with proper checkbox validation
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                // Validate NRIC format
-                const nric = document.getElementById('nric').value.trim();
-                const nricPattern = /^[STFGM]\d{7}[A-Z]$/;
-                if (!nricPattern.test(nric)) {
-                    showMessage('❌ Invalid NRIC format. Please use format: S1234567A', 'error');
-                    document.getElementById('nric').focus();
+                const selectedRace = raceNameSelect.value;
+                const location = raceLocations[selectedRace];
+
+                // Validate race selection
+                if (!selectedRace) {
+                    showMessage('❌ Please select a race.', 'error');
+                    raceNameSelect.focus();
                     return;
                 }
 
-                // Validate email format
-                const email = document.getElementById('email').value.trim();
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(email)) {
-                    showMessage('❌ Invalid email format. Please enter a valid email address.', 'error');
-                    document.getElementById('email').focus();
-                    return;
-                }
-
-                // Validate contact number
-                const contactNumber = document.getElementById('contactNumber').value.trim();
-                const phonePattern = /^\d{8,10}$/;
-                if (!phonePattern.test(contactNumber)) {
-                    showMessage('❌ Invalid contact number. Please enter 8-10 digits without spaces or dashes.', 'error');
-                    document.getElementById('contactNumber').focus();
-                    return;
-                }
-
-                // Validate emergency contact number
-                const emergencyContactNumber = document.getElementById('emergencyContactNumber').value.trim();
-                if (!phonePattern.test(emergencyContactNumber)) {
-                    showMessage('❌ Invalid emergency contact number. Please enter 8-10 digits without spaces or dashes.', 'error');
-                    document.getElementById('emergencyContactNumber').focus();
-                    return;
-                }
-
-                // Validate postal code
-                const postalCode = document.getElementById('postalCode').value.trim();
-                const postalPattern = /^\d{6}$/;
-                if (!postalPattern.test(postalCode)) {
-                    showMessage('❌ Invalid postal code. Please enter a 6-digit postal code.', 'error');
-                    document.getElementById('postalCode').focus();
-                    return;
-                }
-
-                // Validate paddling side selection
-                const paddlingSideCheckboxes = document.querySelectorAll('input[name="paddlingSide"]:checked');
+                // ✅ FIXED: Validate paddling side selection (at least one required)
+                const paddlingSideCheckboxes = document.querySelectorAll('input[name="paddlingSideRace"]:checked');
                 if (paddlingSideCheckboxes.length === 0) {
                     showMessage('❌ Please select at least one paddling side.', 'error');
-                    document.querySelector('input[name="paddlingSide"]').focus();
+                    document.querySelector('input[name="paddlingSideRace"]').focus();
                     return;
                 }
 
-                // Validate terms acceptance
-                const termsAccepted = document.getElementById('termsAccepted').checked;
-                if (!termsAccepted) {
-                    showMessage('❌ Please read and accept the Terms and Conditions to continue.', 'error');
-                    document.getElementById('termsAccepted').focus();
+                // ✅ FIXED: Validate availability for local races only (at least one required)
+                if (location === 'Local') {
+                    const availabilityCheckboxes = document.querySelectorAll('input[name="availability"]:checked');
+                    if (availabilityCheckboxes.length === 0) {
+                        showMessage('❌ Please select at least one availability slot for local races.', 'error');
+                        document.querySelector('input[name="availability"]').focus();
+                        return;
+                    }
+                }
+
+                // Validate weight
+                const weight = document.getElementById('raceWeight').value;
+                const weightNum = parseFloat(weight);
+                if (!weight || isNaN(weightNum) || weightNum < 30 || weightNum > 200) {
+                    showMessage('❌ Please enter a valid weight between 30 and 200 kg.', 'error');
+                    document.getElementById('raceWeight').focus();
                     return;
                 }
 
@@ -686,12 +691,24 @@
                 // Collect form data
                 const formData = new FormData(form);
 
-                // Handle paddling side checkboxes
-                const paddlingSides = Array.from(paddlingSideCheckboxes).map(cb => cb.value);
-                formData.set('paddlingSide', paddlingSides.join(', '));
+                // ✅ Handle availability checkboxes
+                const availabilityCheckboxes = document.querySelectorAll('input[name="availability"]:checked');
+                const availability = Array.from(availabilityCheckboxes).map(cb => cb.value).join(', ');
+                formData.set('availability', availability || 'N/A');
 
-                // Add action
-                formData.append('action', 'registerMember');
+                // ✅ Handle paddling side checkboxes
+                const paddlingSides = Array.from(paddlingSideCheckboxes).map(cb => cb.value);
+                formData.set('paddlingSideRace', paddlingSides.join(', '));
+
+                // Add action and race location
+                formData.append('action', 'registerRace');
+                formData.append('raceLocation', location);
+
+                console.log('📤 Submitting race registration...');
+                console.log('Race:', selectedRace);
+                console.log('Location:', location);
+                console.log('Paddling Side:', paddlingSides.join(', '));
+                console.log('Availability:', availability || 'N/A');
 
                 try {
                     const response = await fetch(SCRIPT_URL, {
@@ -700,21 +717,28 @@
                     });
 
                     const result = await response.text();
+                    console.log('📥 Server response:', result);
 
                     if (result === 'Success') {
-                        showMessage('✅ Registration successful! Welcome to Seahawk Sports Club! 🎉', 'success');
+                        showMessage('✅ Race registration successful! Good luck! 🏆', 'success');
                         form.reset();
+                        availabilitySection.style.display = 'none';
                         window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                        // Clear cache to force refresh on next load
+                        localStorage.removeItem('raceNames');
+                        localStorage.removeItem('raceNamesTime');
                     } else if (result === 'Success - Updated') {
-                        showMessage('✅ Your information has been updated successfully! 🎉', 'success');
+                        showMessage('✅ Race registration updated successfully! 🎉', 'success');
                         form.reset();
+                        availabilitySection.style.display = 'none';
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else {
                         showMessage('❌ Error: ' + result, 'error');
                     }
                 } catch (error) {
                     showMessage('❌ Network error. Please check your connection and try again.', 'error');
-                    console.error('Error:', error);
+                    console.error('❌ Error:', error);
                 } finally {
                     submitBtn.disabled = false;
                     loadingDiv.style.display = 'none';
@@ -742,5 +766,3 @@
     </script>
 </body>
 </html>
-
-
