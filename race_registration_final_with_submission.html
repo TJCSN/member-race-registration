@@ -142,7 +142,6 @@
             border-color: #667eea;
         }
 
-        /* Custom checkbox styling */
         .checkbox-group input[type="checkbox"] {
             appearance: none;
             -webkit-appearance: none;
@@ -184,13 +183,11 @@
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.25);
         }
 
-        /* Highlight the label when checkbox is checked */
         .checkbox-group input[type="checkbox"]:checked + span {
             font-weight: 600;
             color: #667eea;
         }
 
-        /* Update label structure to work with the new checkbox styling */
         .checkbox-group label span {
             transition: all 0.3s ease;
         }
@@ -303,6 +300,29 @@
             content: " *";
             color: #dc3545;
             font-weight: bold;
+        }
+
+        /* ✅ NEW: Retry button styling */
+        .retry-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: #764ba2;
+        }
+
+        /* ✅ NEW: Loading indicator for dropdowns */
+        .select-loading {
+            color: #667eea;
+            font-style: italic;
         }
 
         @media (max-width: 768px) {
@@ -486,60 +506,115 @@
     </div>
 
     <script>
-        // ✅ Configuration - Replace with your actual Google Apps Script URL
+        // ✅ Configuration
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNf6Bl3QBnlChYPHyVckDzND19OS8GnNh80DiSA-EG34hp2MjCwrfo68iatHaLJxaOQA/exec';
         const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
+        const FETCH_TIMEOUT = 10000; // ✅ NEW: 10 second timeout
+        const MAX_RETRIES = 3; // ✅ NEW: Maximum retry attempts
 
-        let raceLocations = {}; // Store race locations
+        let raceLocations = {};
 
-        // ✅ Load member names and race names on page load
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 Page loaded, initializing...');
-            await loadMemberNames();
-            await loadRaceNames();
-            setupFormHandlers();
-        });
+        // ✅ NEW: Fetch with timeout utility function
+        async function fetchWithTimeout(url, options = {}, timeout = FETCH_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-        // ✅ Load member names from Google Sheets with caching
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timeout - server is taking too long to respond');
+                }
+                throw error;
+            }
+        }
+
+        // ✅ NEW: Retry utility function with exponential backoff
+        async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    console.log(`🔄 Attempt ${i + 1}/${retries} for ${url}`);
+                    return await fetchWithTimeout(url, options);
+                } catch (error) {
+                    console.warn(`⚠️ Attempt ${i + 1} failed:`, error.message);
+
+                    if (i === retries - 1) {
+                        throw error; // Last attempt failed
+                    }
+
+                    // Exponential backoff: 1s, 2s, 4s
+                    const delay = Math.pow(2, i) * 1000;
+                    console.log(`⏳ Waiting ${delay}ms before retry...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+        // ✅ IMPROVED: Load member names with better error handling and retry
         async function loadMemberNames() {
             const fullNameSelect = document.getElementById('fullName');
 
             // Check cache first
             const cached = localStorage.getItem('memberNames');
             const cacheTime = localStorage.getItem('memberNamesTime');
-            
+
             if (cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
                 console.log('✅ Using cached member names');
-                const names = JSON.parse(cached);
-                populateMemberDropdown(names);
-                return;
+                try {
+                    const names = JSON.parse(cached);
+                    populateMemberDropdown(names);
+                    return;
+                } catch (e) {
+                    console.warn('⚠️ Cache corrupted, fetching fresh data');
+                    localStorage.removeItem('memberNames');
+                    localStorage.removeItem('memberNamesTime');
+                }
             }
 
             console.log('🔄 Fetching fresh member names from server');
+            fullNameSelect.innerHTML = '<option value="" class="select-loading">⏳ Loading members...</option>';
+
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getMemberNames&t=${Date.now()}`);
+                const response = await fetchWithRetry(`${SCRIPT_URL}?action=getMemberNames&t=${Date.now()}`);
                 const data = await response.json();
 
                 if (data.error) {
-                    fullNameSelect.innerHTML = '<option value="">Error loading members</option>';
-                    showMessage('Error loading member names: ' + data.error, 'error');
-                    return;
+                    throw new Error(data.error);
                 }
 
                 if (data.names && data.names.length > 0) {
                     // Cache the data
                     localStorage.setItem('memberNames', JSON.stringify(data.names));
                     localStorage.setItem('memberNamesTime', Date.now().toString());
-                    
+
                     populateMemberDropdown(data.names);
                     console.log(`✅ Loaded ${data.names.length} member names`);
                 } else {
                     fullNameSelect.innerHTML = '<option value="">No members found</option>';
+                    showMessage('⚠️ No members found in the database', 'error');
                 }
             } catch (error) {
                 console.error('❌ Error loading member names:', error);
-                fullNameSelect.innerHTML = '<option value="">Error loading members</option>';
-                showMessage('Network error loading member names. Please refresh the page.', 'error');
+                fullNameSelect.innerHTML = '<option value="">⚠️ Error loading members</option>';
+
+                // Add retry button
+                const retryBtn = document.createElement('button');
+                retryBtn.type = 'button';
+                retryBtn.className = 'retry-btn';
+                retryBtn.textContent = '🔄 Retry Loading Members';
+                retryBtn.onclick = () => {
+                    retryBtn.remove();
+                    loadMemberNames();
+                };
+                fullNameSelect.parentElement.appendChild(retryBtn);
+
+                showMessage(`❌ Failed to load member names: ${error.message}. Click retry or refresh the page.`, 'error');
             }
         }
 
@@ -555,46 +630,65 @@
             });
         }
 
-        // ✅ Load race names from Google Sheets with caching
+        // ✅ IMPROVED: Load race names with better error handling and retry
         async function loadRaceNames() {
             const raceNameSelect = document.getElementById('raceName');
 
             // Check cache first
             const cached = localStorage.getItem('raceNames');
             const cacheTime = localStorage.getItem('raceNamesTime');
-            
+
             if (cached && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
                 console.log('✅ Using cached race names');
-                const races = JSON.parse(cached);
-                populateRaceDropdown(races);
-                return;
+                try {
+                    const races = JSON.parse(cached);
+                    populateRaceDropdown(races);
+                    return;
+                } catch (e) {
+                    console.warn('⚠️ Cache corrupted, fetching fresh data');
+                    localStorage.removeItem('raceNames');
+                    localStorage.removeItem('raceNamesTime');
+                }
             }
 
             console.log('🔄 Fetching fresh race names from server');
+            raceNameSelect.innerHTML = '<option value="" class="select-loading">⏳ Loading races...</option>';
+
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getRaceNames&t=${Date.now()}`);
+                const response = await fetchWithRetry(`${SCRIPT_URL}?action=getRaceNames&t=${Date.now()}`);
                 const data = await response.json();
 
                 if (data.error) {
-                    raceNameSelect.innerHTML = '<option value="">Error loading races</option>';
-                    showMessage('Error loading race names: ' + data.error, 'error');
-                    return;
+                    throw new Error(data.error);
                 }
 
                 if (data.races && data.races.length > 0) {
                     // Cache the data
                     localStorage.setItem('raceNames', JSON.stringify(data.races));
                     localStorage.setItem('raceNamesTime', Date.now().toString());
-                    
+
                     populateRaceDropdown(data.races);
                     console.log(`✅ Loaded ${data.races.length} race events`);
                 } else {
                     raceNameSelect.innerHTML = '<option value="">No races available</option>';
+                    showMessage('⚠️ No races found in the database', 'error');
                 }
             } catch (error) {
                 console.error('❌ Error loading race names:', error);
-                raceNameSelect.innerHTML = '<option value="">Error loading races</option>';
-                showMessage('Network error loading race names. Please refresh the page.', 'error');
+                raceNameSelect.innerHTML = '<option value="">⚠️ Error loading races</option>';
+
+                // Add retry button
+                const retryBtn = document.createElement('button');
+                retryBtn.type = 'button';
+                retryBtn.className = 'retry-btn';
+                retryBtn.textContent = '🔄 Retry Loading Races';
+                retryBtn.onclick = () => {
+                    retryBtn.remove();
+                    loadRaceNames();
+                };
+                raceNameSelect.parentElement.appendChild(retryBtn);
+
+                showMessage(`❌ Failed to load race names: ${error.message}. Click retry or refresh the page.`, 'error');
             }
         }
 
@@ -602,7 +696,7 @@
         function populateRaceDropdown(races) {
             const raceNameSelect = document.getElementById('raceName');
             raceNameSelect.innerHTML = '<option value="">Select a race</option>';
-            
+
             races.forEach(race => {
                 const option = document.createElement('option');
                 option.value = race.name;
@@ -610,10 +704,39 @@
                 option.dataset.location = race.location;
                 raceNameSelect.appendChild(option);
 
-                // Store race location
                 raceLocations[race.name] = race.location;
             });
         }
+
+        // ✅ IMPROVED: Load data in parallel instead of sequentially
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Page loaded, initializing...');
+            console.log('⏱️ Start time:', new Date().toISOString());
+
+            // ✅ FIX: Load both in parallel using Promise.allSettled
+            const results = await Promise.allSettled([
+                loadMemberNames(),
+                loadRaceNames()
+            ]);
+
+            console.log('⏱️ End time:', new Date().toISOString());
+
+            // Check if both succeeded
+            const memberResult = results[0];
+            const raceResult = results[1];
+
+            if (memberResult.status === 'rejected' && raceResult.status === 'rejected') {
+                showMessage('❌ Critical error: Could not load member names or race names. Please check your internet connection and refresh the page.', 'error');
+            } else if (memberResult.status === 'rejected') {
+                showMessage('⚠️ Warning: Could not load member names. Race names loaded successfully.', 'error');
+            } else if (raceResult.status === 'rejected') {
+                showMessage('⚠️ Warning: Could not load race names. Member names loaded successfully.', 'error');
+            } else {
+                console.log('✅ Both member names and race names loaded successfully');
+            }
+
+            setupFormHandlers();
+        });
 
         // ✅ Setup form handlers
         function setupFormHandlers() {
@@ -624,7 +747,7 @@
             const raceNameSelect = document.getElementById('raceName');
             const availabilitySection = document.getElementById('availabilitySection');
 
-            // ✅ FIXED: Show/hide availability based on race location (removed required attribute)
+            // Show/hide availability based on race location
             raceNameSelect.addEventListener('change', function() {
                 const selectedRace = this.value;
                 const location = raceLocations[selectedRace];
@@ -635,28 +758,25 @@
                     availabilitySection.style.display = 'block';
                 } else {
                     availabilitySection.style.display = 'none';
-                    // Uncheck all availability checkboxes for overseas races
                     document.querySelectorAll('input[name="availability"]').forEach(cb => {
                         cb.checked = false;
                     });
                 }
             });
 
-            // ✅ FIXED: Form submission with proper checkbox validation
+            // Form submission
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
                 const selectedRace = raceNameSelect.value;
                 const location = raceLocations[selectedRace];
 
-                // Validate race selection
                 if (!selectedRace) {
                     showMessage('❌ Please select a race.', 'error');
                     raceNameSelect.focus();
                     return;
                 }
 
-                // ✅ FIXED: Validate paddling side selection (at least one required)
                 const paddlingSideCheckboxes = document.querySelectorAll('input[name="paddlingSideRace"]:checked');
                 if (paddlingSideCheckboxes.length === 0) {
                     showMessage('❌ Please select at least one paddling side.', 'error');
@@ -664,7 +784,6 @@
                     return;
                 }
 
-                // ✅ FIXED: Validate availability for local races only (at least one required)
                 if (location === 'Local') {
                     const availabilityCheckboxes = document.querySelectorAll('input[name="availability"]:checked');
                     if (availabilityCheckboxes.length === 0) {
@@ -674,7 +793,6 @@
                     }
                 }
 
-                // Validate weight
                 const weight = document.getElementById('raceWeight').value;
                 const weightNum = parseFloat(weight);
                 if (!weight || isNaN(weightNum) || weightNum < 30 || weightNum > 200) {
@@ -683,38 +801,29 @@
                     return;
                 }
 
-                // Show loading state
                 submitBtn.disabled = true;
                 loadingDiv.style.display = 'block';
                 messageDiv.style.display = 'none';
 
-                // Collect form data
                 const formData = new FormData(form);
 
-                // ✅ Handle availability checkboxes
                 const availabilityCheckboxes = document.querySelectorAll('input[name="availability"]:checked');
                 const availability = Array.from(availabilityCheckboxes).map(cb => cb.value).join(', ');
                 formData.set('availability', availability || 'N/A');
 
-                // ✅ Handle paddling side checkboxes
                 const paddlingSides = Array.from(paddlingSideCheckboxes).map(cb => cb.value);
                 formData.set('paddlingSideRace', paddlingSides.join(', '));
 
-                // Add action and race location
                 formData.append('action', 'registerRace');
                 formData.append('raceLocation', location);
 
                 console.log('📤 Submitting race registration...');
-                console.log('Race:', selectedRace);
-                console.log('Location:', location);
-                console.log('Paddling Side:', paddlingSides.join(', '));
-                console.log('Availability:', availability || 'N/A');
 
                 try {
-                    const response = await fetch(SCRIPT_URL, {
+                    const response = await fetchWithTimeout(SCRIPT_URL, {
                         method: 'POST',
                         body: formData
-                    });
+                    }, 15000); // 15 second timeout for submissions
 
                     const result = await response.text();
                     console.log('📥 Server response:', result);
@@ -724,8 +833,7 @@
                         form.reset();
                         availabilitySection.style.display = 'none';
                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                        
-                        // Clear cache to force refresh on next load
+
                         localStorage.removeItem('raceNames');
                         localStorage.removeItem('raceNamesTime');
                     } else if (result === 'Success - Updated') {
@@ -737,7 +845,7 @@
                         showMessage('❌ Error: ' + result, 'error');
                     }
                 } catch (error) {
-                    showMessage('❌ Network error. Please check your connection and try again.', 'error');
+                    showMessage('❌ Network error: ' + error.message + '. Please check your connection and try again.', 'error');
                     console.error('❌ Error:', error);
                 } finally {
                     submitBtn.disabled = false;
@@ -753,10 +861,8 @@
             messageDiv.className = 'message ' + type;
             messageDiv.style.display = 'block';
 
-            // Scroll to message
             messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-            // Auto-hide success messages after 8 seconds
             if (type === 'success') {
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
@@ -766,4 +872,3 @@
     </script>
 </body>
 </html>
-
